@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                                 Int                                  @id @default(autoincrement())
+  productId                          String                               @unique
+  unitOfMeasureId                    String
+  productAvailability                String
+  unitsInStock                       Int
+  imgLink                            String
+  ProductDescription                 Product_description[]
+  ProductPrice                       Product_price[]
+  Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
+}
+
+model Product_description {
+  pdId                     Int     @id @default(autoincrement())
+  productId                String
+  product                  Product @relation(fields: [productId], references: [productId])
+  languageId               String
+  productName              String?
+  productListerDescription String?
+  productShortDescription  String?
+  productLongDescription   String?
+}
+
+model Product_price {
+  ppId            Int     @id @default(autoincrement())
+  productId       String
+  product         Product @relation(fields: [productId], references: [productId])
+  currencyId      String
+  price           Float
+  unitOfMeasureId String
+  quantity        Int
+}
+
+model Product_unit_of_measure_conversion {
+  converterId       Int     @id @default(autoincrement())
+  productId         String
+  product           Product @relation(fields: [productId], references: [productId])
+  fromUnitOfMeasure String
+  toUnitOfMeasure   String
+  fromQuantity      Float
+  toQuantity        Float
+}
