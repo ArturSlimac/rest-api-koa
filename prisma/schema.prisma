@@ -14,9 +14,9 @@ model Product {
   id                                 Int                                  @id @default(autoincrement())
   productId                          String                               @unique
   unitOfMeasureId                    String
-  productAvailability                String
-  unitsInStock                       Int
-  imgLink                            String
+  productAvailability                String?
+  unitsInStock                       Int?
+  imgLink                            String?
   ProductDescription                 Product_description[]
   ProductPrice                       Product_price[]
   Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
@@ -25,30 +25,30 @@ model Product {
 model Product_description {
   pdId                     Int     @id @default(autoincrement())
   productId                String
-  product                  Product @relation(fields: [productId], references: [productId])
+  product                  Product @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
   languageId               String
   productName              String?
-  productListerDescription String?
-  productShortDescription  String?
-  productLongDescription   String?
+  productListerDescription String? @db.Text
+  productShortDescription  String? @db.Text
+  productLongDescription   String? @db.Text
 }
 
 model Product_price {
   ppId            Int     @id @default(autoincrement())
   productId       String
   product         Product @relation(fields: [productId], references: [productId])
-  currencyId      String
-  price           Float
-  unitOfMeasureId String
-  quantity        Int
+  currencyId      String?
+  price           Float?
+  unitOfMeasureId String?
+  quantity        Int?
 }
 
 model Product_unit_of_measure_conversion {
   converterId       Int     @id @default(autoincrement())
   productId         String
   product           Product @relation(fields: [productId], references: [productId])
-  fromUnitOfMeasure String
-  toUnitOfMeasure   String
-  fromQuantity      Float
-  toQuantity        Float
+  fromUnitOfMeasure String?
+  toUnitOfMeasure   String?
+  fromQuantity      Float?
+  toQuantity        Float?
 }
