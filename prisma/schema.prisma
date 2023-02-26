@@ -9,6 +9,12 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+model ProductCategory {
+  id         Int       @id @default(autoincrement())
+  categoryId String    @unique
+  name       String?
+  Product    Product[]
+}
 
 model Product {
   id                                 Int                                  @id @default(autoincrement())
@@ -17,10 +23,13 @@ model Product {
   productAvailability                String?
   unitsInStock                       Int?
   imgLink                            String?
+  categoryId                         String @default("-")
+  category                           ProductCategory                      @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade, onUpdate: Cascade)
   ProductDescription                 Product_description[]
   ProductPrice                       Product_price[]
   Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
 }
+
 
 model Product_description {
   pdId                     Int     @id @default(autoincrement())
