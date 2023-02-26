@@ -47,6 +47,14 @@ async function shutdownData() {
 
 const tables = Object.freeze({
   product: "product",
+  product_category: "product_category",
+  product_description: "product_description",
+  product_price: "product_price",
+  price_conversion: "product_unit_of_measure_conversion",
+  customer: "customer",
+  purchaser: "purchaser",
+  cart: "cart",
+  cart_items: "cart_items",
 })
 
 module.exports = {
