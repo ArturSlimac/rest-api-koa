@@ -13,6 +13,7 @@ async function main() {
     process.on("SIGTERM", onClose)
     process.on("SIGQUIT", onClose)
   } catch (error) {
+    console.error(error)
     process.exit(-1)
   }
 }

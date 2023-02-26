@@ -9,8 +9,8 @@ const getAllProducts = async (ctx) => {
 
 getAllProducts.validationScheme = {
   query: {
-    page: Joi.number().integer().optional(),
-    take: Joi.number().integer().optional(),
+    page: Joi.number().integer().min(0).optional(),
+    take: Joi.number().integer().min(0).optional(),
   },
 }
 
