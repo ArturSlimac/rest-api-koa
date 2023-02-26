@@ -1,5 +1,4 @@
 const { getPrisma, tables } = require("../0_data/index")
-const { getLogger } = require("../core/logger")
 
 const getAll = async (page, take) => {
   const products = await getPrisma()[tables.product].findMany({
