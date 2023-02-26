@@ -18,6 +18,16 @@ const getAll = async (query) => {
   return { page, take, amount, products }
 }
 
+const getById = async (params) => {
+  const id = Number(params.id)
+
+  debugLog(`Fetching product with ID ${id}`)
+  const product = await productRepository.getById(id)
+
+  return product
+}
+
 module.exports = {
   getAll,
+  getById,
 }

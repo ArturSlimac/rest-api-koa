@@ -6,11 +6,8 @@ const getAll = async (page, take) => {
     skip: (page - 1) * take,
     take: take,
     include: {
-      ProductDescription: {
-        select: { languageId: true, productName: true },
-      },
       ProductPrice: {
-        select: { price: true, unitOfMeasureId: true },
+        select: { price: true, currencyId: true, unitOfMeasureId: true },
       },
     },
   })
@@ -18,6 +15,23 @@ const getAll = async (page, take) => {
   return { amount, products }
 }
 
+const getById = async (id) => {
+  const product = await getPrisma()[tables.product].findUnique({
+    where: { id: id },
+    include: {
+      ProductDescription: {
+        select: { languageId: true, productName: true },
+      },
+      ProductPrice: {
+        select: { price: true, currencyId: true, unitOfMeasureId: true },
+      },
+    },
+  })
+
+  return product
+}
+
 module.exports = {
   getAll,
+  getById,
 }

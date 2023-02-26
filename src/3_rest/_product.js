@@ -14,12 +14,23 @@ getAllProducts.validationScheme = {
   },
 }
 
+const getProductById = async (ctx) => {
+  ctx.body = await productsService.getById(ctx.params)
+}
+
+getProductById.validationScheme = {
+  params: {
+    id: Joi.number().integer().min(0),
+  },
+}
+
 module.exports = (app) => {
   const router = new Router({
     prefix: "/products",
   })
 
   router.get("/", validate(getAllProducts.validationScheme), getAllProducts)
+  router.get("/:id", validate(getProductById.validationScheme), getProductById)
 
   app.use(router.routes()).use(router.allowedMethods())
 }
