@@ -1,9 +1,9 @@
 const { getPrisma, tables } = require("../0_data/index")
 
-const getAll = async (page, take) => {
+const getAll = async (skip, take) => {
   const products = await getPrisma()[tables.product].findMany({
-    skip: (page - 1) * take,
-    take: take,
+    skip,
+    take,
     include: {
       ProductPrice: {
         select: { price: true, currencyId: true, unitOfMeasureId: true },

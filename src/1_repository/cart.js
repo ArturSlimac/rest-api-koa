@@ -11,7 +11,7 @@ const getSavedCartForUser = async (withId) => {
         },
       },
     })
-    const count = cart.length
+    const count = cart?.length || 0
     return { count, cart }
   } catch (error) {
     const logger = getLogger()

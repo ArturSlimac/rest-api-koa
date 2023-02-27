@@ -2,7 +2,7 @@ const Router = require("@koa/router")
 const cartService = require("../2_service/cart")
 const Joi = require("joi")
 const validate = require("./_validator")
-const testUser = 1
+const testUser = 5
 
 const getCart = async (ctx) => {
   ctx.body = await cartService.getSavedCartForUser(testUser)

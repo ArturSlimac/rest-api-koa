@@ -1,7 +1,7 @@
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 const DEFAULT_TAKE = 20
-const DEFAULT_PAGE = 1
+const DEFAULT_SKIP = 0
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getLogger()
@@ -9,13 +9,13 @@ const debugLog = (message, meta = {}) => {
 }
 
 const getAll = async (query) => {
-  const page = Number(query.page) || DEFAULT_PAGE
+  const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 
-  debugLog(`Fetching all products for page ${page}, take ${take}`)
-  const { count, products } = await productRepository.getAll(page, take)
+  debugLog(`Fetching all products, skip ${skip}, take ${take}`)
+  const { count, products } = await productRepository.getAll(skip, take)
 
-  return { page, take, count, products }
+  return { skip, take, count, products }
 }
 
 const getById = async (params) => {
