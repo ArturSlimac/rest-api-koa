@@ -64,7 +64,15 @@ You can access the REST API of the server using the following endpoints:
 
 - /api/me/cart update articles in user's cart
   - Body:
-    - must be an array with objects
-    - object:
+    - must be an object with a name "items" and values as an array of objects
+    - objects:
       - productId: String (required): a real productId of the product (not a db id as in GET /api/products/:id)
       - quantity: Int (required)
+    - example:
+      ```
+      {"items":[
+        {"productId":"testProd1",
+        "quantity":1},
+        {"productId":"testProd2",
+        "quantity":2}]}
+      ```
