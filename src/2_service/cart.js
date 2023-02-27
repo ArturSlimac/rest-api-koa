@@ -8,11 +8,17 @@ const debugLog = (message, meta = {}) => {
 
 const getSavedCartForUser = async (id) => {
   debugLog(`Fetching cart for user with ID ${id}`)
-  const cart = await cartRepository.getSavedCartForUser(id)
+  const { count, cart } = await cartRepository.getSavedCartForUser(id)
 
-  return cart
+  return { count, cart }
+}
+
+const updateCart = async (id, body) => {
+  debugLog(`Update cart for user with ID ${id}`, { ...body })
+  await cartRepository.updateCart(id, body)
 }
 
 module.exports = {
   getSavedCartForUser,
+  updateCart,
 }

@@ -2,10 +2,14 @@ const Router = require("@koa/router")
 const cartService = require("../2_service/cart")
 const Joi = require("joi")
 const validate = require("./_validator")
+const testUser = 1
 
 const getCart = async (ctx) => {
-  const testUser = 1
   ctx.body = await cartService.getSavedCartForUser(testUser)
+}
+
+const updateCart = async (ctx) => {
+  ctx.body = await cartService.updateCart(testUser, ctx.request.body)
 }
 
 module.exports = (app) => {
@@ -14,6 +18,7 @@ module.exports = (app) => {
   })
 
   router.get("/cart", getCart)
+  router.put("/cart", updateCart)
 
   app.use(router.routes()).use(router.allowedMethods())
 }

@@ -10,8 +10,8 @@ const getAll = async (page, take) => {
       },
     },
   })
-  const amount = products.length
-  return { amount, products }
+  const count = products.length
+  return { count, products }
 }
 
 const getById = async (id) => {
