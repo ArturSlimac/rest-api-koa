@@ -15,9 +15,11 @@
     "node-emoji": "^1.11.0",
     "prisma": "^4.10.1",
     "serialize-error": "8.1.0",
+    "shortid": "^2.2.16",
     "winston": "^3.8.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "nodemon": "^2.0.20"
   },
   "prisma": {

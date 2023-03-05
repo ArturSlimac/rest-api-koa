@@ -19,7 +19,13 @@ const getById = async (id) => {
     where: { id: id },
     include: {
       ProductDescription: {
-        select: { languageId: true, productName: true },
+        select: {
+          languageId: true,
+          productName: true,
+          productListerDescription: true,
+          productShortDescription: true,
+          productLongDescription: true,
+        },
       },
       ProductPrice: {
         select: { price: true, currencyId: true, unitOfMeasureId: true },

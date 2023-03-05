@@ -78,7 +78,8 @@ model Customer {
 }
 
 model Purchaser {
-  purchaserId Int      @id @default(autoincrement())
+  prchsrId    Int      @id @default(autoincrement())
+  purchaserId String   @unique
   customerId  String
   customer    Customer @relation(fields: [customerId], references: [customerId])
   auth0Id     String   @default("12345")
@@ -90,7 +91,7 @@ model Purchaser {
 
 model Cart {
   cartId      Int          @id @default(autoincrement())
-  purchaserId Int          @unique
+  purchaserId String
   purchaser   Purchaser    @relation(fields: [purchaserId], references: [purchaserId])
   isPurchased Boolean      @default(false)
   Cart_items  Cart_items[]
