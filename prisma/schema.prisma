@@ -26,21 +26,21 @@ model Product {
   imgLink                            String?
   categoryId                         String                               @default("-")
   category                           Product_category                     @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade, onUpdate: Cascade)
-  description               Product_description[]
-  price                       Product_price[]
+  description                        Product_description[]
+  price                              Product_price[]
   Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   Cart_items                         Cart_items[]
 }
 
 model Product_description {
-  pdId                     Int     @id @default(autoincrement())
-  productId                String
-  product                  Product @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
-  languageId               String
-  productName              String?
-  lister String? @db.Text
-  short  String? @db.Text
-  long   String? @db.Text
+  pdId        Int     @id @default(autoincrement())
+  productId   String
+  product     Product @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
+  languageId  String
+  productName String?
+  lister      String? @db.Text
+  short       String? @db.Text
+  long        String? @db.Text
 }
 
 model Product_price {
@@ -75,6 +75,7 @@ model Customer {
   zipCode    String?
 
   Purchaser Purchaser[]
+  Order     Order[]
 }
 
 model Purchaser {
@@ -106,4 +107,16 @@ model Cart_items {
   quantity  Int
 
   @@unique([cartId, productId])
+}
+
+model Order {
+  orderId         Int      @id @default(autoincrement())
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [customerId])
+  processedById   Int? 
+  orderPostedDate DateTime
+  taxAmount       Float
+  currencyId      String
+  status          String
+  track_trace     String?
 }
