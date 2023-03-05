@@ -33,16 +33,16 @@ const seedProduct = async (categoryId) => {
       productAvailability: "STOCK",
       unitsInStock: 100,
       imgLink: faker.image.cats(),
-      ProductDescription: {
+      description: {
         create: {
           languageId: "nl",
           productName: faker.commerce.productName(),
-          productListerDescription: faker.commerce.productDescription(),
-          productShortDescription: faker.commerce.productDescription(),
-          productLongDescription: faker.commerce.productDescription(),
+          lister: faker.commerce.productDescription(),
+          short: faker.commerce.productDescription(),
+          long: faker.commerce.productDescription(),
         },
       },
-      ProductPrice: {
+      price: {
         create: {
           currencyId: "EUR",
           price: Number(faker.commerce.price()),

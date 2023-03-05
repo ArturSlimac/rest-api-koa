@@ -5,7 +5,7 @@ const getAll = async (skip, take) => {
     skip,
     take,
     include: {
-      ProductPrice: {
+      price: {
         select: { price: true, currencyId: true, unitOfMeasureId: true },
       },
     },
@@ -18,16 +18,16 @@ const getById = async (id) => {
   const product = await getPrisma()[tables.product].findUnique({
     where: { id: id },
     include: {
-      ProductDescription: {
+      description: {
         select: {
           languageId: true,
           productName: true,
-          productListerDescription: true,
-          productShortDescription: true,
-          productLongDescription: true,
+          lister: true,
+          short: true,
+          long: true,
         },
       },
-      ProductPrice: {
+      price: {
         select: { price: true, currencyId: true, unitOfMeasureId: true },
       },
     },
