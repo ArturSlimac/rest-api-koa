@@ -56,6 +56,7 @@ const tables = Object.freeze({
   cart: "cart",
   cart_items: "cart_items",
   order: "order",
+  order_item: "order_item",
 })
 
 module.exports = {

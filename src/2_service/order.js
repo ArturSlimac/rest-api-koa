@@ -27,7 +27,12 @@ const getById = async (params) => {
   return order
 }
 
+const createOrder = async ({ date, currencyId, products }) => {
+  debugLog("Creating a new order", { date, currencyId, products })
+}
+
 module.exports = {
   getAll,
   getById,
+  createOrder,
 }

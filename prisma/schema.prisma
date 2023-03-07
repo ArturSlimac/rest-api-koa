@@ -30,6 +30,7 @@ model Product {
   price                              Product_price[]
   Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   Cart_items                         Cart_items[]
+  Order_item                         Order_item[]
 }
 
 model Product_description {
@@ -110,13 +111,25 @@ model Cart_items {
 }
 
 model Order {
-  orderId         Int      @id @default(autoincrement())
+  orderId         Int          @id @default(autoincrement())
   customerId      String
-  customer        Customer @relation(fields: [customerId], references: [customerId])
-  processedById   Int? 
+  customer        Customer     @relation(fields: [customerId], references: [customerId])
+  processedById   Int?
   orderPostedDate DateTime
   taxAmount       Float
   currencyId      String
   status          String
   track_trace     String?
+  Order_item      Order_item[]
+}
+
+model Order_item {
+  orderItemId     Int     @id @default(autoincrement())
+  orderId         Int
+  order           Order   @relation(fields: [orderId], references: [orderId])
+  productId       String
+  product         Product @relation(fields: [productId], references: [productId])
+  quantity        Int
+  unitOfMeasureId String?
+  netPrice        Float?
 }

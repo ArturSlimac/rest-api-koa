@@ -31,7 +31,45 @@ const getById = async (id) => {
   }
 }
 
+const createOrder = async ({ date, currencyId, products }) => {
+  const status = "placed"
+  try {
+    const orderId = await getPrisma()[tables.order].create({
+      currencyId,
+      orderPostedDate: date,
+      status,
+      select: { orderId: true },
+    })
+
+    products.forEach(async ({ productId, quantity }) => {
+      await getPrisma()[tables.order_item].create({
+        orderId,
+        productId,
+        quantity,
+      })
+
+      await getPrisma()[tables.product].update({
+        where: {
+          productId,
+        },
+        data: {
+          unitsInStock: {
+            decrement: quantity,
+          },
+        },
+      })
+    })
+  } catch (error) {
+    const logger = getLogger()
+    logger.error("Error in placing order", {
+      error,
+    })
+    throw error
+  }
+}
+
 module.exports = {
   getAll,
   getById,
+  createOrder,
 }

@@ -24,6 +24,23 @@ getOrderById.validationScheme = {
   },
 }
 
+const createOrder = async (ctx) => {
+  const newOrder = await ordersService.createOrder({
+    ...ctx.request.body,
+    date: new Date(ctx.request.body.date),
+  })
+  ctx.body = newOrder
+  ctx.status = 201
+}
+createOrder.validationScheme = {
+  body: {
+    amount: Joi.number().invalid(0),
+    date: Joi.date().iso().less("now"),
+    placeId: Joi.number().integer().positive(),
+    user: Joi.string(),
+  },
+}
+
 module.exports = (app) => {
   const router = new Router({
     prefix: "/me/orders",
@@ -31,6 +48,7 @@ module.exports = (app) => {
 
   router.get("/", validate(getAllorders.validationScheme), getAllorders)
   router.get("/:id", validate(getOrderById.validationScheme), getOrderById)
+  router.post("/", validate(createOrder.validationScheme), createOrder)
 
   app.use(router.routes()).use(router.allowedMethods())
 }
