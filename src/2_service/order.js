@@ -8,28 +8,34 @@ const debugLog = (message, meta = {}) => {
   this.logger.debug(message, meta)
 }
 
-const getAll = async (query) => {
+const getAll = async (testUser, query) => {
   const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 
-  debugLog(`Fetching all orders, skip ${skip}, take ${take}`)
-  const { count, orders } = await orderRepository.getAll(skip, take)
+  debugLog(
+    `Fetching all orders for user ${testUser}, skip ${skip}, take ${take}`
+  )
+  const { count, orders } = await orderRepository.getAll(testUser, skip, take)
 
   return { skip, take, count, orders }
 }
 
-const getById = async (params) => {
+const getById = async (testUser, params) => {
   const id = Number(params.id)
 
-  debugLog(`Fetching order with ID ${id}`)
-  const order = await orderRepository.getById(id)
+  debugLog(`Fetching order with ID ${id} for user ${testUser}`)
+  const order = await orderRepository.getById(testUser, id)
 
   return order
 }
 
-const createOrder = async ({ date, currencyId, products }) => {
-  debugLog("Creating a new order", { date, currencyId, products })
-  await orderRepository.createOrder({ date, currencyId, products })
+const createOrder = async (testUser, { date, currencyId, products }) => {
+  debugLog(`Creating a new order for user ${testUser}`, {
+    date,
+    currencyId,
+    products,
+  })
+  await orderRepository.createOrder(testUser, { date, currencyId, products })
 }
 
 module.exports = {

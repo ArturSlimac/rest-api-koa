@@ -2,12 +2,13 @@ const Router = require("@koa/router")
 const ordersService = require("../2_service/order")
 const Joi = require("joi")
 const validate = require("./_validator")
+const testUser = 1
 
-const getAllorders = async (ctx) => {
-  ctx.body = await ordersService.getAll(ctx.query)
+const getAllOrders = async (ctx) => {
+  ctx.body = await ordersService.getAll(testUser, ctx.query)
 }
 
-getAllorders.validationScheme = {
+getAllOrders.validationScheme = {
   query: {
     page: Joi.number().integer().min(0).optional(),
     skip: Joi.number().integer().min(0).optional(),
@@ -15,7 +16,7 @@ getAllorders.validationScheme = {
 }
 
 const getOrderById = async (ctx) => {
-  ctx.body = await ordersService.getById(ctx.params)
+  ctx.body = await ordersService.getById(testUser, ctx.params)
 }
 
 getOrderById.validationScheme = {
@@ -25,7 +26,7 @@ getOrderById.validationScheme = {
 }
 
 const createOrder = async (ctx) => {
-  const newOrder = await ordersService.createOrder({
+  const newOrder = await ordersService.createOrder(testUser, {
     ...ctx.request.body,
     date: new Date(ctx.request.body.date),
   })
@@ -39,7 +40,7 @@ module.exports = (app) => {
     prefix: "/me/orders",
   })
 
-  router.get("/", validate(getAllorders.validationScheme), getAllorders)
+  router.get("/", validate(getAllOrders.validationScheme), getAllOrders)
   router.get("/:id", validate(getOrderById.validationScheme), getOrderById)
   // router.post("/", validate(createOrder.validationScheme), createOrder)
   router.post("/", createOrder)
