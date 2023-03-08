@@ -33,19 +33,27 @@ const getById = async (id) => {
 
 const createOrder = async ({ date, currencyId, products }) => {
   const status = "placed"
+  const customerId = "lEji6rndqM"
+  const taxAmount = 125
   try {
     const orderId = await getPrisma()[tables.order].create({
-      currencyId,
-      orderPostedDate: date,
-      status,
+      data: {
+        currencyId,
+        customerId,
+        orderPostedDate: date,
+        status,
+        taxAmount,
+      },
       select: { orderId: true },
     })
-
-    products.forEach(async ({ productId, quantity }) => {
+    console.log(products)
+    products.forEach(async ({ id, quantity }) => {
       await getPrisma()[tables.order_item].create({
-        orderId,
-        productId,
-        quantity,
+        data: {
+          orderId,
+          productId: id,
+          quantity,
+        },
       })
 
       await getPrisma()[tables.product].update({

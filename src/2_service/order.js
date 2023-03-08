@@ -29,6 +29,7 @@ const getById = async (params) => {
 
 const createOrder = async ({ date, currencyId, products }) => {
   debugLog("Creating a new order", { date, currencyId, products })
+  await orderRepository.createOrder({ date, currencyId, products })
 }
 
 module.exports = {
