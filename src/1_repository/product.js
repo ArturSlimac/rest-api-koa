@@ -1,11 +1,18 @@
 const { getPrisma, tables } = require("../0_data/index")
+const { getLogger } = require("../core/logger")
 
 const getAll = async (skip, take) => {
   try {
     const products = await getPrisma()[tables.product].findMany({
       skip,
       take,
-      include: {
+      select: {
+        id: true,
+        unitOfMeasureId: true,
+        productAvailability: true,
+        unitsInStock: true,
+        imgLink: true,
+        categoryId: true,
         price: {
           select: { price: true, currencyId: true, unitOfMeasureId: true },
         },
@@ -25,8 +32,14 @@ const getAll = async (skip, take) => {
 const getById = async (id) => {
   try {
     const product = await getPrisma()[tables.product].findUnique({
-      where: { id: id },
-      include: {
+      where: { id },
+      select: {
+        id: true,
+        unitOfMeasureId: true,
+        productAvailability: true,
+        unitsInStock: true,
+        imgLink: true,
+        categoryId: true,
         description: {
           select: {
             languageId: true,
