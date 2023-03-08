@@ -13,9 +13,9 @@ const getSavedCartForUser = async (id) => {
   return { count, cart }
 }
 
-const updateCart = async (id, body) => {
-  debugLog(`Update cart for user with ID ${id}`, { ...body })
-  await cartRepository.updateCart(id, body)
+const updateCart = async (testUser, body) => {
+  debugLog(`Update cart for user with ID ${testUser}`, { ...body })
+  await cartRepository.updateCart(testUser, body)
 }
 
 module.exports = {

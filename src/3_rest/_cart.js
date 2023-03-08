@@ -16,8 +16,8 @@ updateCart.validationScheme = {
   body: {
     items: Joi.array().items(
       Joi.object({
-        productId: Joi.string(),
-        quantity: Joi.number().integer().min(0),
+        id: Joi.number().integer().positive(),
+        quantity: Joi.number().integer().positive(),
       })
     ),
   },

@@ -4,14 +4,14 @@ const { getLogger } = require("../core/logger")
 const getSavedCartForUser = async (withId) => {
   try {
     const cart = await getPrisma()[tables.cart].findFirst({
-      where: { purchaserId: withId },
+      where: { prchsrId: withId },
       include: {
         Cart_items: {
-          select: { productId: true, quantity: true },
+          select: { prdctId: true, quantity: true },
         },
       },
     })
-    const count = cart?.length || 0
+    const count = cart?.Cart_items?.length || 0
     return { count, cart }
   } catch (error) {
     const logger = getLogger()
@@ -22,20 +22,20 @@ const getSavedCartForUser = async (withId) => {
   }
 }
 
-const updateCart = async (id, body) => {
-  const cartId = await getCartIdByUserId(id)
+const updateCart = async (testUser, body) => {
+  const crtId = await getCartIdByUserId(testUser)
 
   try {
-    body.items.forEach(async ({ productId, quantity }) => {
+    body.items.forEach(async ({ id, quantity }) => {
       await getPrisma()[tables.cart_items].upsert({
         where: {
-          cartId_productId: { productId, cartId },
+          crtId_prdctId: { prdctId: id, crtId },
         },
         update: { quantity },
         create: {
-          productId,
+          prdctId: id,
           quantity,
-          cartId,
+          crtId,
         },
       })
     })
@@ -49,19 +49,20 @@ const updateCart = async (id, body) => {
 }
 
 //helper
-const getCartIdByUserId = async (id) => {
+//if cart is not in db the func will create it
+const getCartIdByUserId = async (prchsrId) => {
   try {
-    const { cartId } = await getPrisma()[tables.cart].upsert({
-      where: { purchaserId: id },
+    const { id } = await getPrisma()[tables.cart].upsert({
+      where: { prchsrId },
       update: {},
       create: {
-        purchaserId: id,
+        prchsrId,
         isPurchased: false,
       },
-      select: { cartId: true },
+      select: { id: true },
     })
 
-    return cartId
+    return id
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in getting cartId", {

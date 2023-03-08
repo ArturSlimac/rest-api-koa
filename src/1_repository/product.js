@@ -12,7 +12,7 @@ const getAll = async (skip, take) => {
         productAvailability: true,
         unitsInStock: true,
         imgLink: true,
-        categoryId: true,
+        ctgrId: true,
         price: {
           select: { price: true, currencyId: true, unitOfMeasureId: true },
         },
@@ -39,7 +39,7 @@ const getById = async (id) => {
         productAvailability: true,
         unitsInStock: true,
         imgLink: true,
-        categoryId: true,
+        ctgrId: true,
         description: {
           select: {
             languageId: true,
