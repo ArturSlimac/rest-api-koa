@@ -34,14 +34,14 @@ model Product {
 }
 
 model Product_description {
-  pdId        Int     @id @default(autoincrement())
-  prdctId     Int
-  product     Product @relation(fields: [prdctId], references: [id])
-  languageId  String
-  productName String?
-  lister      String? @db.Text
-  short       String? @db.Text
-  long        String? @db.Text
+  pdId       Int     @id @default(autoincrement())
+  prdctId    Int
+  product    Product @relation(fields: [prdctId], references: [id])
+  languageId String
+  name       String?
+  lister     String? @db.Text
+  short      String? @db.Text
+  long       String? @db.Text
 }
 
 model Product_price {

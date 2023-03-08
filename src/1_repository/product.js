@@ -43,7 +43,7 @@ const getById = async (id) => {
         description: {
           select: {
             languageId: true,
-            productName: true,
+            name: true,
             lister: true,
             short: true,
             long: true,
