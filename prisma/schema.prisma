@@ -24,8 +24,8 @@ model Product {
   productAvailability                String?
   unitsInStock                       Int?
   imgLink                            String?
-  categoryId                         String                               @default("-")
-  category                           Product_category                     @relation(fields: [categoryId], references: [categoryId], onDelete: Cascade, onUpdate: Cascade)
+  ctgrId                             Int
+  category                           Product_category                     @relation(fields: [ctgrId], references: [id])
   description                        Product_description[]
   price                              Product_price[]
   Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
@@ -35,8 +35,8 @@ model Product {
 
 model Product_description {
   pdId        Int     @id @default(autoincrement())
-  productId   String
-  product     Product @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
+  prdctId     Int
+  product     Product @relation(fields: [prdctId], references: [id])
   languageId  String
   productName String?
   lister      String? @db.Text
@@ -46,8 +46,8 @@ model Product_description {
 
 model Product_price {
   ppId            Int     @id @default(autoincrement())
-  productId       String
-  product         Product @relation(fields: [productId], references: [productId])
+  prdctId         Int
+  product         Product @relation(fields: [prdctId], references: [id])
   currencyId      String?
   price           Float?
   unitOfMeasureId String?
@@ -56,8 +56,8 @@ model Product_price {
 
 model Product_unit_of_measure_conversion {
   converterId       Int     @id @default(autoincrement())
-  productId         String
-  product           Product @relation(fields: [productId], references: [productId])
+  prdctId           Int
+  product           Product @relation(fields: [prdctId], references: [id])
   fromUnitOfMeasure String?
   toUnitOfMeasure   String?
   fromQuantity      Float?
@@ -65,7 +65,7 @@ model Product_unit_of_measure_conversion {
 }
 
 model Customer {
-  cstmrId    Int     @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   customerId String  @unique
   logoLink   String?
   phoneNr    String?
@@ -80,10 +80,10 @@ model Customer {
 }
 
 model Purchaser {
-  prchsrId    Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   purchaserId String   @unique
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [customerId])
+  cstmrId     Int
+  customer    Customer @relation(fields: [cstmrId], references: [id])
   auth0Id     String   @default("12345")
   firstName   String   @default("anon")
   lastName    String   @default("anon")
@@ -92,28 +92,28 @@ model Purchaser {
 }
 
 model Cart {
-  cartId      Int          @id @default(autoincrement())
-  purchaserId String
-  purchaser   Purchaser    @relation(fields: [purchaserId], references: [purchaserId])
+  id          Int          @id @default(autoincrement())
+  prchsrId    Int          @unique
+  purchaser   Purchaser    @relation(fields: [prchsrId], references: [id])
   isPurchased Boolean      @default(false)
   Cart_items  Cart_items[]
 }
 
 model Cart_items {
-  ci_id     Int     @id @default(autoincrement())
-  cartId    Int
-  cart      Cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade)
-  productId String
-  product   Product @relation(fields: [productId], references: [productId], onDelete: Cascade, onUpdate: Cascade)
-  quantity  Int
+  ci_id    Int     @id @default(autoincrement())
+  crtId    Int
+  cart     Cart    @relation(fields: [crtId], references: [id])
+  prdctId  Int
+  product  Product @relation(fields: [prdctId], references: [id])
+  quantity Int
 
-  @@unique([cartId, productId])
+  @@unique([crtId, prdctId])
 }
 
 model Order {
-  orderId         Int          @id @default(autoincrement())
-  customerId      String
-  customer        Customer     @relation(fields: [customerId], references: [customerId])
+  id              Int          @id @default(autoincrement())
+  cstmrId         Int
+  customer        Customer     @relation(fields: [cstmrId], references: [id])
   processedById   Int?
   orderPostedDate DateTime
   taxAmount       Float
@@ -125,11 +125,13 @@ model Order {
 
 model Order_item {
   orderItemId     Int     @id @default(autoincrement())
-  orderId         Int
-  order           Order   @relation(fields: [orderId], references: [orderId])
-  productId       String
-  product         Product @relation(fields: [productId], references: [productId])
+  ordrId          Int
+  order           Order   @relation(fields: [ordrId], references: [id])
+  prdctId         Int
+  product         Product @relation(fields: [prdctId], references: [id])
   quantity        Int
   unitOfMeasureId String?
   netPrice        Float?
+
+  @@unique([ordrId, prdctId])
 }
