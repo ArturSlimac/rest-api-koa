@@ -6,7 +6,7 @@ const getSavedCartForUser = async (withId) => {
     const cart = await getPrisma()[tables.cart].findFirst({
       where: { prchsrId: withId },
       include: {
-        Cart_items: {
+        cart_items: {
           select: { prdctId: true, quantity: true },
         },
       },
