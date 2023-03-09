@@ -69,16 +69,24 @@ const getById = async (id) => {
 }
 
 const updateQuantity = async (id, quantity) => {
-  await getPrisma()[tables.product].update({
-    where: {
-      id,
-    },
-    data: {
-      unitsInStock: {
-        decrement: quantity,
+  try {
+    await getPrisma()[tables.product].update({
+      where: {
+        id,
       },
-    },
-  })
+      data: {
+        unitsInStock: {
+          decrement: quantity,
+        },
+      },
+    })
+  } catch (error) {
+    const logger = getLogger()
+    logger.error(`Error in updating unitsInStock for a product with id ${id}`, {
+      error,
+    })
+    throw error
+  }
 }
 
 module.exports = {

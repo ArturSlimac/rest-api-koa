@@ -1,5 +1,6 @@
 const { getLogger } = require("../core/logger")
 const orderRepository = require("../1_repository/order")
+const ServiceError = require("../core/serviceError")
 const DEFAULT_TAKE = 20
 const DEFAULT_SKIP = 0
 
@@ -26,6 +27,12 @@ const getById = async (testUser, params) => {
   debugLog(`Fetching order with ID ${id} for user ${testUser}`)
   const order = await orderRepository.getById(testUser, id)
 
+  if (!order) {
+    throw ServiceError.notFound(`There is no order with id ${id}`, {
+      id,
+    })
+  }
+
   return order
 }
 
@@ -48,8 +55,18 @@ const createOrder = async (
   })
 }
 
+const updateOrderById = async ({ id, delivery_address, boxes }) => {
+  debugLog(`Updating order with id ${id}`, {
+    delivery_address,
+    boxes,
+  })
+
+  await orderRepository.updateOrderById({ id, delivery_address, boxes })
+}
+
 module.exports = {
   getAll,
   getById,
   createOrder,
+  updateOrderById,
 }

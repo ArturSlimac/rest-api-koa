@@ -9,9 +9,12 @@ const getDeliveryAddressByOrderId = async (ordrId) => {
     return address
   } catch (error) {
     const logger = getLogger()
-    logger.error("Error in creating delivery address", {
-      error,
-    })
+    logger.error(
+      `Error in getting delivery address for an order with id ${ordrId}`,
+      {
+        error,
+      }
+    )
     throw error
   }
 }

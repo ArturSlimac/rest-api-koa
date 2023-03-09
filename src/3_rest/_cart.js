@@ -8,6 +8,8 @@ const getCart = async (ctx) => {
   ctx.body = await cartService.getSavedCartForUser(testUser)
 }
 
+getCart.validationScheme = null
+
 const updateCart = async (ctx) => {
   ctx.body = await cartService.updateCart(testUser, ctx.request.body)
 }
@@ -28,7 +30,7 @@ module.exports = (app) => {
     prefix: "/me",
   })
 
-  router.get("/cart", getCart)
+  router.get("/cart", validate(getCart.validationScheme), getCart)
   router.put("/cart", validate(updateCart.validationScheme), updateCart)
 
   app.use(router.routes()).use(router.allowedMethods())

@@ -1,5 +1,6 @@
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
+const ServiceError = require("../core/serviceError")
 const DEFAULT_TAKE = 20
 const DEFAULT_SKIP = 0
 
@@ -23,6 +24,11 @@ const getById = async (params) => {
 
   debugLog(`Fetching product with ID ${id}`)
   const product = await productRepository.getById(id)
+  if (!product) {
+    throw ServiceError.notFound(`There is no product with id ${id}`, {
+      id,
+    })
+  }
 
   return product
 }
