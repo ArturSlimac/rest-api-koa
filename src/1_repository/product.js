@@ -8,13 +8,16 @@ const getAll = async (skip, take) => {
       take,
       select: {
         id: true,
-        unitOfMeasureId: true,
-        productAvailability: true,
-        unitsInStock: true,
         imgLink: true,
+        unitsInStock: true,
+        productAvailability: true,
         ctgrId: true,
+        unitOfMeasureId: true,
         price: {
           select: { price: true, currencyId: true, unitOfMeasureId: true },
+        },
+        description: {
+          select: { name: true },
         },
       },
     })

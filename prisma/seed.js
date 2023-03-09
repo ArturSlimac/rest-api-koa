@@ -7,6 +7,7 @@ const shortid = require("shortid")
 async function main() {
   //clean up db before seeding
   await cleanUpDb()
+
   //categories
   const ctgrId = await seedProductCategory("category1")
   const ctgrId1 = await seedProductCategory("category2")
