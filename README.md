@@ -78,11 +78,10 @@ You can access the REST API of the server using the following endpoints:
       - `quantity`: Int (required)
     - example:
       ```
-      {"items":[
-        {"id":1,
-        "quantity":1},
-        {id:2,
-        "quantity":2}]}
+       items: [
+          { id: 1, quantity: 1 },
+          { id: 2, quantity: 2 },
+              ],
       ```
 
 ### POST
