@@ -25,13 +25,12 @@ const getForUser = async (withId) => {
 const update = async (testPurchaser, body) => {
   const crtId = await getCartIdByUserId(testPurchaser)
   try {
+    await getPrisma()[tables.cart_items].deleteMany({
+      where: { crtId },
+    })
     body.items.forEach(async ({ id, quantity }) => {
-      await getPrisma()[tables.cart_items].upsert({
-        where: {
-          crtId_prdctId: { prdctId: id, crtId },
-        },
-        update: { quantity },
-        create: {
+      await getPrisma()[tables.cart_items].create({
+        data: {
           prdctId: id,
           quantity,
           crtId,
@@ -65,6 +64,20 @@ const getCartIdByUserId = async (prchsrId) => {
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in getting cartId", {
+      error,
+    })
+    throw error
+  }
+}
+
+const cleanUpCart = async () => {
+  try {
+    await getPrisma()[tables.cart_items].deleteMany({
+      where: { crtId },
+    })
+  } catch (error) {
+    const logger = getLogger()
+    logger.error("Error in clean up the cart", {
       error,
     })
     throw error
