@@ -1,4 +1,4 @@
-const { getPrisma, tables } = require("../0_data/index")
+const { getPrisma, tables, statusesOrder } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 
@@ -86,7 +86,7 @@ const create = async (
   testCustomer,
   { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
-  const status = "placed"
+  const status = statusesOrder.ordered
   const taxAmount = 125
   try {
     products.forEach(async ({ prdctId, quantity }) => {

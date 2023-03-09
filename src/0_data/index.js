@@ -62,9 +62,18 @@ const tables = Object.freeze({
   box_order: "box_order",
 })
 
+const statusesOrder = Object.freeze({
+  ordered: "ordered",
+  processed: "processed",
+  shipped: "shipped",
+  out_for_delivery: "out_for_delivery",
+  delivered: "delivered",
+})
+
 module.exports = {
   initializeDatabase,
   getPrisma,
   tables,
   shutdownData,
+  statusesOrder,
 }

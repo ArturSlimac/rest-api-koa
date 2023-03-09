@@ -1,9 +1,10 @@
 const { getLogger } = require("../core/logger")
 const orderRepository = require("../1_repository/order")
 const ServiceError = require("../core/serviceError")
+const { statusesOrder } = require("../0_data/index")
 const DEFAULT_TAKE = 20
 const DEFAULT_SKIP = 0
-const DEFAULT_STATUS_TO_BE_CHANGED = "placed"
+const DEFAULT_STATUS_TO_BE_CHANGED = statusesOrder.ordered
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getLogger()
