@@ -11,15 +11,15 @@ const debugLog = (message, meta = {}) => {
   this.logger.debug(message, meta)
 }
 
-const getAll = async (testCustomer, query) => {
+const getAll = async (testPurchaser, query) => {
   const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 
   debugLog(
-    `Fetching all orders for user ${testCustomer}, skip ${skip}, take ${take}`
+    `Fetching all orders for user ${testPurchaser}, skip ${skip}, take ${take}`
   )
   const { count, orders } = await orderRepository.getAll(
-    testCustomer,
+    testPurchaser,
     skip,
     take
   )
@@ -27,11 +27,11 @@ const getAll = async (testCustomer, query) => {
   return { skip, take, count, orders }
 }
 
-const getById = async (testCustomer, params) => {
+const getById = async (testPurchaser, params) => {
   const id = Number(params.id)
 
-  debugLog(`Fetching order with ID ${id} for user ${testCustomer}`)
-  const order = await orderRepository.getById(testCustomer, id)
+  debugLog(`Fetching order with ID ${id} for user ${testPurchaser}`)
+  const order = await orderRepository.getById(testPurchaser, id)
 
   if (!order) {
     throw ServiceError.notFound(`There is no order with id ${id}`, {
@@ -43,15 +43,15 @@ const getById = async (testCustomer, params) => {
 }
 
 const create = async (
-  testCustomer,
+  testPurchaser,
   { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
-  debugLog(`Creating a new order for user ${testCustomer}`, {
+  debugLog(`Creating a new order for user ${testPurchaser}`, {
     date,
     currencyId,
     products,
   })
-  const ordrId = await orderRepository.create(testCustomer, {
+  const ordrId = await orderRepository.create(testPurchaser, {
     date,
     currencyId,
     deliveryServiceId,

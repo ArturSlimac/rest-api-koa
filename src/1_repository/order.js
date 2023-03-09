@@ -1,19 +1,22 @@
 const { getPrisma, tables, statusesOrder } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
+const purchaserRepository = require("../1_repository/purchaser")
 
-const getAll = async (testCustomer, skip, take) => {
+const getAll = async (testPurchaser, skip, take) => {
+  const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
   try {
     const orders = await getPrisma()[tables.order].findMany({
       skip,
       take,
       where: {
-        cstmrId: testCustomer,
+        cmpnId,
       },
       select: {
         id: true,
         orderPostedDate: true,
         status: true,
+        purchaser: { select: { firstName: true, lastName: true } },
       },
     })
     const count = orders?.length || 0
@@ -27,7 +30,7 @@ const getAll = async (testCustomer, skip, take) => {
   }
 }
 
-const getById = async (testCustomer, id) => {
+const getById = async (testPurchaser, id) => {
   try {
     const order = await getPrisma()[tables.order].findUnique({
       where: { id },
@@ -83,7 +86,7 @@ const getById = async (testCustomer, id) => {
 }
 
 const create = async (
-  testCustomer,
+  testPurchaser,
   { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
   const status = statusesOrder.ordered
@@ -96,7 +99,7 @@ const create = async (
     await getPrisma()[tables.order].create({
       data: {
         currencyId,
-        cstmrId: testCustomer,
+        prchsrId: testPurchaser,
         orderPostedDate: date,
         status,
         taxAmount,

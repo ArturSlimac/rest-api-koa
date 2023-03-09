@@ -64,31 +64,31 @@ model Product_unit_of_measure_conversion {
   toQuantity        Float?
 }
 
-model Customer {
-  id         Int     @id @default(autoincrement())
-  customerId String  @unique
-  logoLink   String?
-  phoneNr    String?
-  street     String?
-  streetNr   String?
-  country    String?
-  city       String?
-  zipCode    String?
-
+model Company {
+  id        Int         @id @default(autoincrement())
+  companyId String      @unique
+  logoLink  String?
+  phoneNr   String?
+  street    String?
+  streetNr  String?
+  country   String?
+  city      String?
+  zipCode   String?
   purchaser Purchaser[]
   order     Order[]
 }
 
 model Purchaser {
-  id          Int      @id @default(autoincrement())
-  purchaserId String   @unique
-  cstmrId     Int
-  customer    Customer @relation(fields: [cstmrId], references: [id])
-  auth0Id     String   @default("12345")
-  firstName   String   @default("anon")
-  lastName    String   @default("anon")
-  phoneNumber String   @default("a number")
+  id          Int     @id @default(autoincrement())
+  purchaserId String  @unique
+  cmpnId      Int
+  company     Company @relation(fields: [cmpnId], references: [id])
+  auth0Id     String  @default("12345")
+  firstName   String  @default("anon")
+  lastName    String  @default("anon")
+  phoneNumber String  @default("a number")
   cart        Cart[]
+  order       Order[]
 }
 
 model Cart {
@@ -112,8 +112,8 @@ model Cart_items {
 
 model Order {
   id               Int                @id @default(autoincrement())
-  cstmrId          Int
-  customer         Customer           @relation(fields: [cstmrId], references: [id])
+  prchsrId         Int
+  purchaser        Purchaser          @relation(fields: [prchsrId], references: [id])
   processedById    Int?
   orderPostedDate  DateTime
   taxAmount        Float
@@ -123,6 +123,9 @@ model Order {
   order_item       Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
+  Company          Company?           @relation(fields: [companyId], references: [id])
+  companyId        Int?
+
 }
 
 model Order_item {

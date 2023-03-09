@@ -22,8 +22,8 @@ const getForUser = async (withId) => {
   }
 }
 
-const update = async (testUser, body) => {
-  const crtId = await getCartIdByUserId(testUser)
+const update = async (testPurchaser, body) => {
+  const crtId = await getCartIdByUserId(testPurchaser)
   try {
     body.items.forEach(async ({ id, quantity }) => {
       await getPrisma()[tables.cart_items].upsert({

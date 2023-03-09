@@ -13,9 +13,9 @@ const getForUser = async (id) => {
   return { count, cart }
 }
 
-const update = async (testUser, body) => {
-  debugLog(`Update cart for user with ID ${testUser}`, { ...body })
-  await cartRepository.update(testUser, body)
+const update = async (testPurchaser, body) => {
+  debugLog(`Update cart for user with ID ${testPurchaser}`, { ...body })
+  await cartRepository.update(testPurchaser, body)
 }
 
 module.exports = {

@@ -51,7 +51,7 @@ const tables = Object.freeze({
   product_description: "product_description",
   product_price: "product_price",
   price_conversion: "product_unit_of_measure_conversion",
-  customer: "customer",
+  company: "company",
   purchaser: "purchaser",
   cart: "cart",
   cart_items: "cart_items",

@@ -2,10 +2,10 @@ const Router = require("@koa/router")
 const ordersService = require("../2_service/order")
 const Joi = require("joi")
 const validate = require("./_validator")
-const testCustomer = 1
+const testPurchaser = 1
 
 const getAllOrders = async (ctx) => {
-  ctx.body = await ordersService.getAll(testCustomer, ctx.query)
+  ctx.body = await ordersService.getAll(testPurchaser, ctx.query)
 }
 
 getAllOrders.validationScheme = {
@@ -16,7 +16,7 @@ getAllOrders.validationScheme = {
 }
 
 const getOrderById = async (ctx) => {
-  ctx.body = await ordersService.getById(testCustomer, ctx.params)
+  ctx.body = await ordersService.getById(testPurchaser, ctx.params)
 }
 
 getOrderById.validationScheme = {
@@ -26,7 +26,7 @@ getOrderById.validationScheme = {
 }
 
 const createOrder = async (ctx) => {
-  const newOrder = await ordersService.create(testCustomer, {
+  const newOrder = await ordersService.create(testPurchaser, {
     ...ctx.request.body,
     date: new Date(ctx.request.body.date),
   })

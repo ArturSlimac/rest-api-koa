@@ -17,19 +17,19 @@ async function main() {
   Array.from([1, 2, 3, 4, 5]).forEach((_) => seedProduct(ctgrId1))
 
   //customers
-  const cstmrId = await seedCustomer()
-  const cstmrId1 = await seedCustomer()
-  const cstmrId2 = await seedCustomer()
+  const cmpnId = await seedCompany()
+  const cmpnId1 = await seedCompany()
+  const cmpnId2 = await seedCompany()
 
   //purchasers
   const amountOfPurchasers = [1, 2, 3]
-  const prchsrIds = await getPrchsrIds(amountOfPurchasers, cstmrId)
+  const prchsrIds = await seedPrchsrIds(amountOfPurchasers, cmpnId)
 
   const amountOfPurchasers1 = [1, 2, 3, 4]
-  const prchsrIds1 = await getPrchsrIds(amountOfPurchasers1, cstmrId1)
+  const prchsrIds1 = await seedPrchsrIds(amountOfPurchasers1, cmpnId1)
 
   const amountOfPurchasers2 = [1, 2, 3, 4, 5, 6]
-  const prchsrIds2 = await getPrchsrIds(amountOfPurchasers2, cstmrId2)
+  const prchsrIds2 = await seedPrchsrIds(amountOfPurchasers2, cmpnId2)
 
   //carts for the purchasers
   prchsrIds.forEach(async (prchsrId) => await seedCart(prchsrId))
@@ -88,11 +88,11 @@ const seedProduct = async (ctgrId) => {
   })
 }
 
-const seedCustomer = async () => {
-  const customerId = shortid.generate()
-  const { id } = await prisma[tables.customer].create({
+const seedCompany = async () => {
+  const companyId = shortid.generate()
+  const { id } = await prisma[tables.company].create({
     data: {
-      customerId,
+      companyId,
       logoLink: faker.internet.avatar(),
       phoneNr: faker.phone.number("+32 ### ## ## ##"),
       street: faker.address.street(),
@@ -108,12 +108,12 @@ const seedCustomer = async () => {
   return id
 }
 
-const seedPurchaser = async (cstmrId) => {
+const seedPurchaser = async (cmpnId) => {
   const purchaserId = shortid.generate()
 
   const { id } = await prisma[tables.purchaser].create({
     data: {
-      cstmrId,
+      cmpnId,
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       phoneNumber: faker.phone.number("+32 ### ## ## ##"),
@@ -173,18 +173,18 @@ const cleanUpDb = async () => {
   await prisma[tables.cart_items].deleteMany()
   await prisma[tables.cart].deleteMany()
   await prisma[tables.purchaser].deleteMany()
-  await prisma[tables.customer].deleteMany()
+  await prisma[tables.company].deleteMany()
   await prisma[tables.product_price].deleteMany()
   await prisma[tables.product_description].deleteMany()
   await prisma[tables.product].deleteMany()
   await prisma[tables.product_category].deleteMany()
 }
 
-const getPrchsrIds = async (amountOfPurchasers, cstmrId) => {
+const seedPrchsrIds = async (amountOfPurchasers, cmpnId) => {
   return await amountOfPurchasers.reduce(async (previousPromise, _) => {
     let arr = await previousPromise
 
-    const id = await seedPurchaser(cstmrId)
+    const id = await seedPurchaser(cmpnId)
     arr.push(id)
     return arr
   }, Promise.resolve([]))
