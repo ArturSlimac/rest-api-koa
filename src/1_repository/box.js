@@ -51,7 +51,27 @@ const getAvailableBoxesByType = async (type) => {
   }
 }
 
+const createBox_order = async (bxId, quantity, price, ordrId) => {
+  try {
+    await getPrisma()[tables.box_order].create({
+      data: {
+        bxId,
+        quantity,
+        ordrId: ordrId.id,
+        price,
+      },
+    })
+  } catch (error) {
+    const logger = getLogger()
+    logger.error(`Error in creating box_order for ordrId ${ordrId}`, {
+      error,
+    })
+    throw error
+  }
+}
+
 module.exports = {
   getAllAvailableBoxes,
   getAvailableBoxesByType,
+  createBox_order,
 }

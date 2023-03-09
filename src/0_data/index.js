@@ -59,6 +59,7 @@ const tables = Object.freeze({
   order_item: "order_item",
   delivery_address: "delivery_address",
   box: "box",
+  box_order: "box_order",
 })
 
 module.exports = {

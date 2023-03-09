@@ -14,7 +14,7 @@ model Product_category {
   id         Int       @id @default(autoincrement())
   categoryId String    @unique
   name       String?
-  Product    Product[]
+  product    Product[]
 }
 
 model Product {
@@ -28,9 +28,9 @@ model Product {
   category                           Product_category                     @relation(fields: [ctgrId], references: [id])
   description                        Product_description[]
   price                              Product_price[]
-  Product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
-  Cart_items                         Cart_items[]
-  Order_item                         Order_item[]
+  product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
+  cart_items                         Cart_items[]
+  order_item                         Order_item[]
 }
 
 model Product_description {
@@ -75,8 +75,8 @@ model Customer {
   city       String?
   zipCode    String?
 
-  Purchaser Purchaser[]
-  Order     Order[]
+  purchaser Purchaser[]
+  order     Order[]
 }
 
 model Purchaser {
@@ -88,7 +88,7 @@ model Purchaser {
   firstName   String   @default("anon")
   lastName    String   @default("anon")
   phoneNumber String   @default("a number")
-  Cart        Cart[]
+  cart        Cart[]
 }
 
 model Cart {
@@ -96,7 +96,7 @@ model Cart {
   prchsrId    Int          @unique
   purchaser   Purchaser    @relation(fields: [prchsrId], references: [id])
   isPurchased Boolean      @default(false)
-  Cart_items  Cart_items[]
+  cart_items  Cart_items[]
 }
 
 model Cart_items {
@@ -120,9 +120,9 @@ model Order {
   currencyId       String
   status           String
   track_trace      String?
-  Order_item       Order_item[]
-  Delivery_address Delivery_address[]
-  Box_order        Box_order[]
+  order_item       Order_item[]
+  delivery_address Delivery_address[]
+  box_order        Box_order[]
 }
 
 model Order_item {
@@ -158,7 +158,7 @@ model Box {
   length                Float
   price                 Float
   isActiveForDeliveries Boolean     @default(true)
-  Box_order             Box_order[]
+  box_order             Box_order[]
 }
 
 model Box_order {
@@ -167,5 +167,6 @@ model Box_order {
   box      Box   @relation(fields: [bxId], references: [id])
   ordrId   Int
   order    Order @relation(fields: [ordrId], references: [id])
+  price    Float
   quantity Int
 }
