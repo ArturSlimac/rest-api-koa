@@ -70,7 +70,7 @@ You can access the REST API of the server using the following endpoints:
 
 ### PUT
 
-- /api/me/cart update articles in user's cart
+- /api/me/cart : update articles in user's cart
   - Body:
     - must be an object with a name `items` and values as an array of `objects`
     - `objects`:
@@ -85,10 +85,37 @@ You can access the REST API of the server using the following endpoints:
               ]
         }
       ```
+- /api/me/orders/`:id` : update the existing whith given `id`
+
+  - Body:
+
+    - `delivery_address`: Object {`street`: String (required),
+      `streetNr`: String (required),
+      `zip`: String (required),
+      `country`: String (required)}
+    - `boxes`: Array of ojects { `bxId`: Int (required), `quantity`: Int (required), `price`: Float (required)}
+    - either `delivery_address` or `boxes` is required
+
+  - example:
+
+  ```
+  {
+    delivery_address: {
+        street: "street",
+        streetNr: "55AA",
+        zip: "7878HG",
+        country: "somewhere",
+    },
+     boxes: [
+        { bxId: 3, quantity: 2, price: 12 },
+        { bxId: 5, quantity: 5, price: 95.5 },
+            ],
+    }
+  ```
 
 ### POST
 
-- /api/me/orders/
+- /api/me/orders/ : create order in the db
   - Body:
     - `date`: String (required)
     - `currencyId`: String (required)
