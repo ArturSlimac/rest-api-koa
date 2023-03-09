@@ -1,7 +1,7 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 
-const getSavedCartForUser = async (withId) => {
+const getForUser = async (withId) => {
   try {
     const cart = await getPrisma()[tables.cart].findFirst({
       where: { prchsrId: withId },
@@ -22,7 +22,7 @@ const getSavedCartForUser = async (withId) => {
   }
 }
 
-const updateCart = async (testUser, body) => {
+const update = async (testUser, body) => {
   const crtId = await getCartIdByUserId(testUser)
   try {
     body.items.forEach(async ({ id, quantity }) => {
@@ -72,6 +72,6 @@ const getCartIdByUserId = async (prchsrId) => {
 }
 
 module.exports = {
-  getSavedCartForUser,
-  updateCart,
+  getForUser,
+  update,
 }

@@ -8,7 +8,7 @@ const debugLog = (message, meta = {}) => {
 
 const getAllAvailable = async () => {
   debugLog(`Fetching all boxes`)
-  const { count, boxes } = await boxRepository.getAllAvailableBoxes()
+  const { count, boxes } = await boxRepository.getAllAvailable()
 
   return { count, boxes }
 }
@@ -16,7 +16,7 @@ const getAllAvailable = async () => {
 const getByAvailableType = async (params) => {
   const type = params.type
   debugLog(`Fetching all boxes`)
-  const { count, boxes } = await boxRepository.getAvailableBoxesByType(type)
+  const { count, boxes } = await boxRepository.getAvailableByType(type)
 
   return { count, boxes }
 }

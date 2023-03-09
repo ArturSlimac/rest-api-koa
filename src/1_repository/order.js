@@ -2,13 +2,13 @@ const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 
-const getAll = async (testUser, skip, take) => {
+const getAll = async (testCustomer, skip, take) => {
   try {
     const orders = await getPrisma()[tables.order].findMany({
       skip,
       take,
       where: {
-        cstmrId: testUser,
+        cstmrId: testCustomer,
       },
       select: {
         id: true,
@@ -27,7 +27,7 @@ const getAll = async (testUser, skip, take) => {
   }
 }
 
-const getById = async (testUser, id) => {
+const getById = async (testCustomer, id) => {
   try {
     const order = await getPrisma()[tables.order].findUnique({
       where: { id },
@@ -82,8 +82,8 @@ const getById = async (testUser, id) => {
   }
 }
 
-const createOrder = async (
-  testUser,
+const create = async (
+  testCustomer,
   { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
   const status = "placed"
@@ -96,7 +96,7 @@ const createOrder = async (
     await getPrisma()[tables.order].create({
       data: {
         currencyId,
-        cstmrId: testUser,
+        cstmrId: testCustomer,
         orderPostedDate: date,
         status,
         taxAmount,
@@ -124,7 +124,7 @@ const createOrder = async (
   }
 }
 
-const updateOrderById = async ({ id, delivery_address, boxes }) => {
+const updateById = async ({ id, delivery_address, boxes }) => {
   try {
     delivery_address &&
       (await getPrisma()[tables.order].update({
@@ -156,7 +156,7 @@ const updateOrderById = async ({ id, delivery_address, boxes }) => {
 }
 
 //helper
-const getStatusOfOrderById = async (id) =>
+const getStatusById = async (id) =>
   await getPrisma()[tables.order].findUnique({
     where: { id },
     select: { status: true },
@@ -165,7 +165,7 @@ const getStatusOfOrderById = async (id) =>
 module.exports = {
   getAll,
   getById,
-  createOrder,
-  updateOrderById,
-  getStatusOfOrderById,
+  create,
+  updateById,
+  getStatusById,
 }

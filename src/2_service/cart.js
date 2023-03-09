@@ -6,19 +6,19 @@ const debugLog = (message, meta = {}) => {
   this.logger.debug(message, meta)
 }
 
-const getSavedCartForUser = async (id) => {
+const getForUser = async (id) => {
   debugLog(`Fetching cart for user with ID ${id}`)
-  const { count, cart } = await cartRepository.getSavedCartForUser(id)
+  const { count, cart } = await cartRepository.getForUser(id)
 
   return { count, cart }
 }
 
-const updateCart = async (testUser, body) => {
+const update = async (testUser, body) => {
   debugLog(`Update cart for user with ID ${testUser}`, { ...body })
-  await cartRepository.updateCart(testUser, body)
+  await cartRepository.update(testUser, body)
 }
 
 module.exports = {
-  getSavedCartForUser,
-  updateCart,
+  getForUser,
+  update,
 }

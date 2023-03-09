@@ -5,13 +5,13 @@ const validate = require("./_validator")
 const testUser = 1
 
 const getCart = async (ctx) => {
-  ctx.body = await cartService.getSavedCartForUser(testUser)
+  ctx.body = await cartService.getForUser(testUser)
 }
 
 getCart.validationScheme = null
 
 const updateCart = async (ctx) => {
-  ctx.body = await cartService.updateCart(testUser, ctx.request.body)
+  ctx.body = await cartService.update(testUser, ctx.request.body)
 }
 
 updateCart.validationScheme = {

@@ -1,7 +1,7 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 
-const getAllAvailableBoxes = async () => {
+const getAllAvailable = async () => {
   try {
     const boxes = await getPrisma()[tables.box].findMany({
       where: { isActiveForDeliveries: true },
@@ -26,7 +26,7 @@ const getAllAvailableBoxes = async () => {
   }
 }
 
-const getAvailableBoxesByType = async (type) => {
+const getAvailableByType = async (type) => {
   try {
     const boxes = await getPrisma()[tables.box].findMany({
       where: { type, isActiveForDeliveries: true },
@@ -52,6 +52,6 @@ const getAvailableBoxesByType = async (type) => {
 }
 
 module.exports = {
-  getAllAvailableBoxes,
-  getAvailableBoxesByType,
+  getAllAvailable,
+  getAvailableByType,
 }
