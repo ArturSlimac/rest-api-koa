@@ -61,7 +61,7 @@ const seedProduct = async (ctgrId) => {
       description: {
         create: {
           languageId: "nl",
-          productName: faker.commerce.productName(),
+          name: faker.commerce.productName(),
           lister: faker.commerce.productDescription(),
           short: faker.commerce.productDescription(),
           long: faker.commerce.productDescription(),
