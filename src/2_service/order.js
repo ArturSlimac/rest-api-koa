@@ -29,13 +29,22 @@ const getById = async (testUser, params) => {
   return order
 }
 
-const createOrder = async (testUser, { date, currencyId, products }) => {
+const createOrder = async (
+  testUser,
+  { date, currencyId, deliveryServiceId, products, delivery_address }
+) => {
   debugLog(`Creating a new order for user ${testUser}`, {
     date,
     currencyId,
     products,
   })
-  await orderRepository.createOrder(testUser, { date, currencyId, products })
+  await orderRepository.createOrder(testUser, {
+    date,
+    currencyId,
+    deliveryServiceId,
+    products,
+    delivery_address,
+  })
 }
 
 module.exports = {

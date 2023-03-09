@@ -111,16 +111,17 @@ model Cart_items {
 }
 
 model Order {
-  id              Int          @id @default(autoincrement())
-  cstmrId         Int
-  customer        Customer     @relation(fields: [cstmrId], references: [id])
-  processedById   Int?
-  orderPostedDate DateTime
-  taxAmount       Float
-  currencyId      String
-  status          String
-  track_trace     String?
-  Order_item      Order_item[]
+  id               Int                @id @default(autoincrement())
+  cstmrId          Int
+  customer         Customer           @relation(fields: [cstmrId], references: [id])
+  processedById    Int?
+  orderPostedDate  DateTime
+  taxAmount        Float
+  currencyId       String
+  status           String
+  track_trace      String?
+  Order_item       Order_item[]
+  Delivery_address Delivery_address[]
 }
 
 model Order_item {
@@ -134,4 +135,15 @@ model Order_item {
   netPrice        Float?
 
   @@unique([ordrId, prdctId])
+}
+
+model Delivery_address {
+  id       Int    @id @default(autoincrement())
+  ordrId   Int
+  order    Order  @relation(fields: [ordrId], references: [id])
+  dsId     Int  //delivery service Id
+  street   String
+  streetNr String
+  zip      String
+  country  String
 }

@@ -63,7 +63,10 @@ const getById = async (testUser, id) => {
   }
 }
 
-const createOrder = async (testUser, { date, currencyId, products }) => {
+const createOrder = async (
+  testUser,
+  { date, currencyId, deliveryServiceId, products, delivery_address }
+) => {
   const status = "placed"
   const taxAmount = 125
   try {
@@ -76,6 +79,18 @@ const createOrder = async (testUser, { date, currencyId, products }) => {
         taxAmount,
       },
       select: { id: true },
+    })
+
+    const { street, streetNr, zip, country } = delivery_address
+    await getPrisma()[tables.delivery_address].create({
+      data: {
+        ordrId: ordrId.id,
+        dsId: deliveryServiceId,
+        street,
+        streetNr,
+        zip,
+        country,
+      },
     })
 
     products.forEach(async ({ id, quantity, price }) => {
@@ -107,6 +122,25 @@ const createOrder = async (testUser, { date, currencyId, products }) => {
     throw error
   }
 }
+
+//helpers
+const postInOrderTable = async (
+  currencyId,
+  testUser,
+  date,
+  status,
+  taxAmount
+) =>
+  await getPrisma()[tables.order].create({
+    data: {
+      currencyId,
+      cstmrId: testUser,
+      orderPostedDate: date,
+      status,
+      taxAmount,
+    },
+    select: { id: true },
+  })
 
 module.exports = {
   getAll,
