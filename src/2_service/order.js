@@ -31,7 +31,7 @@ const getById = async (testUser, params) => {
 
 const createOrder = async (
   testUser,
-  { date, currencyId, deliveryServiceId, products, delivery_address }
+  { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
   debugLog(`Creating a new order for user ${testUser}`, {
     date,
@@ -44,6 +44,7 @@ const createOrder = async (
     deliveryServiceId,
     products,
     delivery_address,
+    boxes,
   })
 }
 

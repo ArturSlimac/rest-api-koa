@@ -1,5 +1,8 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
+const deliveryAddressRepository = require("../1_repository/deliveryAddress")
+const productRepository = require("../1_repository/product")
+const boxRepository = require("../1_repository/box")
 
 const getAll = async (testUser, skip, take) => {
   try {
@@ -35,7 +38,7 @@ const getById = async (testUser, id) => {
         orderPostedDate: true,
         status: true,
         track_trace: true,
-        Order_item: {
+        order_item: {
           select: {
             quantity: true,
             netPrice: true,
@@ -45,6 +48,24 @@ const getById = async (testUser, id) => {
                   select: { name: true },
                 },
               },
+            },
+          },
+        },
+        delivery_address: {
+          select: {
+            dsId: true,
+            street: true,
+            streetNr: true,
+            zip: true,
+            country: true,
+          },
+        },
+        box_order: {
+          select: {
+            quantity: true,
+            price: true,
+            box: {
+              select: { type: true },
             },
           },
         },
@@ -65,7 +86,7 @@ const getById = async (testUser, id) => {
 
 const createOrder = async (
   testUser,
-  { date, currencyId, deliveryServiceId, products, delivery_address }
+  { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
 ) => {
   const status = "placed"
   const taxAmount = 125
@@ -79,7 +100,7 @@ const createOrder = async (
     )
 
     const { street, streetNr, zip, country } = delivery_address
-    await postInDeliveryAddressTable(
+    await deliveryAddressRepository.createDeliveryAddress(
       ordrId,
       deliveryServiceId,
       street,
@@ -90,6 +111,12 @@ const createOrder = async (
 
     //post in Order_item table and calls func to decrement quantity of a product in stock
     await postInOrder_itemTable(ordrId, products)
+
+    //post boxes for the order in the Box_order table
+    boxes.forEach(async ({ bxId, quantity, price }) => {
+      await boxRepository.createBox_order(bxId, quantity, price, ordrId)
+    })
+
     return ordrId
   } catch (error) {
     const logger = getLogger()
@@ -119,26 +146,6 @@ const postInOrderTable = async (
     select: { id: true },
   })
 
-const postInDeliveryAddressTable = async (
-  ordrId,
-  deliveryServiceId,
-  street,
-  streetNr,
-  zip,
-  country
-) => {
-  await getPrisma()[tables.delivery_address].create({
-    data: {
-      ordrId: ordrId.id,
-      dsId: deliveryServiceId,
-      street,
-      streetNr,
-      zip,
-      country,
-    },
-  })
-}
-
 const postInOrder_itemTable = async (ordrId, products) => {
   products.forEach(async ({ id, quantity, price }) => {
     await getPrisma()[tables.order_item].create({
@@ -150,20 +157,7 @@ const postInOrder_itemTable = async (ordrId, products) => {
       },
     })
 
-    await updateProductTable(id, quantity)
-  })
-}
-
-const updateProductTable = async (id, quantity) => {
-  await getPrisma()[tables.product].update({
-    where: {
-      id,
-    },
-    data: {
-      unitsInStock: {
-        decrement: quantity,
-      },
-    },
+    await productRepository.updateQuantity(id, quantity)
   })
 }
 

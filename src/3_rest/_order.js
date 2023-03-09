@@ -2,7 +2,7 @@ const Router = require("@koa/router")
 const ordersService = require("../2_service/order")
 const Joi = require("joi")
 const validate = require("./_validator")
-const testUser = 1
+const testUser = 8
 
 const getAllOrders = async (ctx) => {
   ctx.body = await ordersService.getAll(testUser, ctx.query)

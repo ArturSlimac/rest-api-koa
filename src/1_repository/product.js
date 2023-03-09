@@ -68,7 +68,21 @@ const getById = async (id) => {
   }
 }
 
+const updateQuantity = async (id, quantity) => {
+  await getPrisma()[tables.product].update({
+    where: {
+      id,
+    },
+    data: {
+      unitsInStock: {
+        decrement: quantity,
+      },
+    },
+  })
+}
+
 module.exports = {
   getAll,
   getById,
+  updateQuantity,
 }
