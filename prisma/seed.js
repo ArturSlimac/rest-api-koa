@@ -131,7 +131,6 @@ const seedCartItem = async (crtId) => {
   const prdctIds = await prisma[tables.product].findMany({
     select: { id: true },
   })
-  console.log(prdctIds)
   prdctIds.forEach(async ({ id }) => {
     await prisma[tables.cart_items].create({
       data: {

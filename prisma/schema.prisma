@@ -122,6 +122,7 @@ model Order {
   track_trace      String?
   Order_item       Order_item[]
   Delivery_address Delivery_address[]
+  Box_order        Box_order[]
 }
 
 model Order_item {
@@ -141,9 +142,30 @@ model Delivery_address {
   id       Int    @id @default(autoincrement())
   ordrId   Int
   order    Order  @relation(fields: [ordrId], references: [id])
-  dsId     Int  //delivery service Id
+  dsId     Int //delivery service Id
   street   String
   streetNr String
   zip      String
   country  String
+}
+
+model Box {
+  id                    Int         @id @default(autoincrement())
+  name                  String      @unique
+  type                  String      @default("generic")
+  width                 Float
+  height                Float
+  length                Float
+  price                 Float
+  isActiveForDeliveries Boolean     @default(true)
+  Box_order             Box_order[]
+}
+
+model Box_order {
+  id       Int   @id @default(autoincrement())
+  bxId     Int
+  box      Box   @relation(fields: [bxId], references: [id])
+  ordrId   Int
+  order    Order @relation(fields: [ordrId], references: [id])
+  quantity Int
 }
