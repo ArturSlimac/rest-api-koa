@@ -40,7 +40,7 @@ const getById = async (testPurchaser, id) => {
         orderPostedDate: true,
         status: true,
         track_trace: true,
-        order_item: {
+        order_items: {
           select: {
             quantity: true,
             netPrice: true,
@@ -110,7 +110,7 @@ const create = async (
             dsId: deliveryServiceId,
           },
         },
-        order_item: {
+        order_items: {
           createMany: { data: [...products] },
         },
         box_order: {

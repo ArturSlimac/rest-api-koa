@@ -30,7 +30,7 @@ model Product {
   price                              Product_price[]
   product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   cart_items                         Cart_items[]
-  order_item                         Order_item[]
+  order_items                         Order_item[]
 }
 
 model Product_description {
@@ -88,7 +88,7 @@ model Purchaser {
   lastName    String  @default("anon")
   phoneNumber String  @default("a number")
   cart        Cart[]
-  order       Order[]
+  orders       Order[]
 }
 
 model Cart {
@@ -120,10 +120,10 @@ model Order {
   currencyId       String
   status           String
   track_trace      String?
-  order_item       Order_item[]
+  order_items       Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
-  Company          Company?           @relation(fields: [companyId], references: [id])
+  company          Company?           @relation(fields: [companyId], references: [id])
   companyId        Int?
 
   Notification Notification[]
