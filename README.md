@@ -98,6 +98,7 @@ You can access the REST API of the server using the following endpoints:
       `streetNr`: String (required),
       `zip`: String (required),
       `country`: String (required)}
+    - `boxes`: Array of ojects { `bxId`: Int (required), `quantity`: Int (required), `price`: Float (required)}
     - example:
     ```
     {
@@ -105,8 +106,8 @@ You can access the REST API of the server using the following endpoints:
       currencyId: "EUR",
       deliveryServiceId: 5,
       products: [
-         { id: 1, quantity: 5, price: 12 },
-         { id: 2, quantity: 6, price: 16 },
+         { prdctId: 1, quantity: 5, netPrice: 12 },
+         { prdctId: 2, quantity: 6, netPrice: 16 },
                 ],
       delivery_address: {
           street: "street",
@@ -114,5 +115,9 @@ You can access the REST API of the server using the following endpoints:
           zip: "7878HG",
           country: "somewhere",
       },
+       boxes: [
+          { bxId: 3, quantity: 2, price: 12 },
+          { bxId: 5, quantity: 5, price: 95.5 },
+              ],
       }
     ```

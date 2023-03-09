@@ -1,8 +1,6 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
-const deliveryAddressRepository = require("../1_repository/deliveryAddress")
 const productRepository = require("../1_repository/product")
-const boxRepository = require("../1_repository/box")
 
 const getAll = async (testUser, skip, take) => {
   try {
@@ -91,33 +89,32 @@ const createOrder = async (
   const status = "placed"
   const taxAmount = 125
   try {
-    const ordrId = await postInOrderTable(
-      currencyId,
-      testUser,
-      date,
-      status,
-      taxAmount
-    )
-
-    const { street, streetNr, zip, country } = delivery_address
-    await deliveryAddressRepository.createDeliveryAddress(
-      ordrId,
-      deliveryServiceId,
-      street,
-      streetNr,
-      zip,
-      country
-    )
-
-    //post in Order_item table and calls func to decrement quantity of a product in stock
-    await postInOrder_itemTable(ordrId, products)
-
-    //post boxes for the order in the Box_order table
-    boxes.forEach(async ({ bxId, quantity, price }) => {
-      await boxRepository.createBox_order(bxId, quantity, price, ordrId)
+    products.forEach(async ({ prdctId, quantity }) => {
+      await productRepository.updateQuantity(prdctId, quantity)
     })
 
-    return ordrId
+    await getPrisma()[tables.order].create({
+      data: {
+        currencyId,
+        cstmrId: testUser,
+        orderPostedDate: date,
+        status,
+        taxAmount,
+        delivery_address: {
+          create: {
+            ...delivery_address,
+            dsId: deliveryServiceId,
+          },
+        },
+        order_item: {
+          createMany: { data: [...products] },
+        },
+        box_order: {
+          createMany: { data: [...boxes] },
+        },
+      },
+      select: { id: true },
+    })
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in placing order", {
@@ -125,40 +122,6 @@ const createOrder = async (
     })
     throw error
   }
-}
-
-//helpers
-const postInOrderTable = async (
-  currencyId,
-  testUser,
-  date,
-  status,
-  taxAmount
-) =>
-  await getPrisma()[tables.order].create({
-    data: {
-      currencyId,
-      cstmrId: testUser,
-      orderPostedDate: date,
-      status,
-      taxAmount,
-    },
-    select: { id: true },
-  })
-
-const postInOrder_itemTable = async (ordrId, products) => {
-  products.forEach(async ({ id, quantity, price }) => {
-    await getPrisma()[tables.order_item].create({
-      data: {
-        ordrId: ordrId.id,
-        prdctId: id,
-        quantity,
-        netPrice: price,
-      },
-    })
-
-    await productRepository.updateQuantity(id, quantity)
-  })
 }
 
 module.exports = {

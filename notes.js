@@ -13,6 +13,10 @@ const bodylaceOrder = {
     zip: "7878HG",
     country: "somewhere",
   },
+  boxes: [
+    { bxId: 3, quantity: 2, price: 12 },
+    { bxId: 5, quantity: 5, price: 95.5 },
+  ],
 }
 
 const updateCartBody = {
