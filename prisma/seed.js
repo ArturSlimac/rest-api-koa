@@ -35,6 +35,15 @@ async function main() {
   prchsrIds.forEach(async (prchsrId) => await seedCart(prchsrId))
   prchsrIds1.forEach(async (prchsrId) => await seedCart(prchsrId))
   prchsrIds2.forEach(async (prchsrId) => await seedCart(prchsrId))
+
+  //boxes
+  const type1 = "generic"
+  const amountOfBoxes1 = [1, 2, 3, 4]
+  amountOfBoxes1.forEach(async (_) => await seedBoxes(type1))
+
+  const type2 = "custom"
+  const amountOfBoxes2 = [1, 2, 3, 4, 5, 6]
+  amountOfBoxes2.forEach(async (_) => await seedBoxes(type2))
 }
 
 const seedProductCategory = async (categoryId) => {
@@ -142,8 +151,23 @@ const seedCartItem = async (crtId) => {
   })
 }
 
+const seedBoxes = async (type) => {
+  await prisma[tables.box].create({
+    data: {
+      name: faker.music.songName(),
+      type,
+      width: Number(faker.finance.amount(5, 200, 2)),
+      height: Number(faker.finance.amount(5, 200, 2)),
+      length: Number(faker.finance.amount(5, 200, 2)),
+      price: Number(faker.commerce.price()),
+      isActiveForDeliveries: true,
+    },
+  })
+}
+
 //helpers
 const cleanUpDb = async () => {
+  await prisma[tables.box].deleteMany()
   await prisma[tables.order_item].deleteMany()
   await prisma[tables.order].deleteMany()
   await prisma[tables.cart_items].deleteMany()
