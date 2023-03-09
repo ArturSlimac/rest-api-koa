@@ -74,8 +74,8 @@ model Company {
   country   String?
   city      String?
   zipCode   String?
-  purchaser Purchaser[]
-  order     Order[]
+  purchasers Purchaser[]
+  orders     Order[]
 }
 
 model Purchaser {
@@ -126,6 +126,7 @@ model Order {
   Company          Company?           @relation(fields: [companyId], references: [id])
   companyId        Int?
 
+  Notification Notification[]
 }
 
 model Order_item {
@@ -172,4 +173,12 @@ model Box_order {
   order    Order @relation(fields: [ordrId], references: [id])
   price    Float
   quantity Int
+}
+
+model Notification {
+  id     Int    @id @default(autoincrement())
+  date   String
+  status String
+  ordrId Int
+  order  Order  @relation(fields: [ordrId], references: [id])
 }
