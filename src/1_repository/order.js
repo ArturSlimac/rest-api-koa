@@ -70,50 +70,27 @@ const createOrder = async (
   const status = "placed"
   const taxAmount = 125
   try {
-    const ordrId = await getPrisma()[tables.order].create({
-      data: {
-        currencyId,
-        cstmrId: testUser,
-        orderPostedDate: date,
-        status,
-        taxAmount,
-      },
-      select: { id: true },
-    })
+    const ordrId = await postInOrderTable(
+      currencyId,
+      testUser,
+      date,
+      status,
+      taxAmount
+    )
 
     const { street, streetNr, zip, country } = delivery_address
-    await getPrisma()[tables.delivery_address].create({
-      data: {
-        ordrId: ordrId.id,
-        dsId: deliveryServiceId,
-        street,
-        streetNr,
-        zip,
-        country,
-      },
-    })
+    await postInDeliveryAddressTable(
+      ordrId,
+      deliveryServiceId,
+      street,
+      streetNr,
+      zip,
+      country
+    )
 
-    products.forEach(async ({ id, quantity, price }) => {
-      await getPrisma()[tables.order_item].create({
-        data: {
-          ordrId: ordrId.id,
-          prdctId: id,
-          quantity,
-          netPrice: price,
-        },
-      })
-
-      await getPrisma()[tables.product].update({
-        where: {
-          id,
-        },
-        data: {
-          unitsInStock: {
-            decrement: quantity,
-          },
-        },
-      })
-    })
+    //post in Order_item table and calls func to decrement quantity of a product in stock
+    await postInOrder_itemTable(ordrId, products)
+    return ordrId
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in placing order", {
@@ -141,6 +118,54 @@ const postInOrderTable = async (
     },
     select: { id: true },
   })
+
+const postInDeliveryAddressTable = async (
+  ordrId,
+  deliveryServiceId,
+  street,
+  streetNr,
+  zip,
+  country
+) => {
+  await getPrisma()[tables.delivery_address].create({
+    data: {
+      ordrId: ordrId.id,
+      dsId: deliveryServiceId,
+      street,
+      streetNr,
+      zip,
+      country,
+    },
+  })
+}
+
+const postInOrder_itemTable = async (ordrId, products) => {
+  products.forEach(async ({ id, quantity, price }) => {
+    await getPrisma()[tables.order_item].create({
+      data: {
+        ordrId: ordrId.id,
+        prdctId: id,
+        quantity,
+        netPrice: price,
+      },
+    })
+
+    await updateProductTable(id, quantity)
+  })
+}
+
+const updateProductTable = async (id, quantity) => {
+  await getPrisma()[tables.product].update({
+    where: {
+      id,
+    },
+    data: {
+      unitsInStock: {
+        decrement: quantity,
+      },
+    },
+  })
+}
 
 module.exports = {
   getAll,

@@ -38,7 +38,7 @@ const createOrder = async (
     currencyId,
     products,
   })
-  await orderRepository.createOrder(testUser, {
+  const ordrId = await orderRepository.createOrder(testUser, {
     date,
     currencyId,
     deliveryServiceId,
