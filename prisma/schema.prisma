@@ -140,7 +140,7 @@ model Order_item {
 
 model Delivery_address {
   id       Int    @id @default(autoincrement())
-  ordrId   Int
+  ordrId   Int    @unique
   order    Order  @relation(fields: [ordrId], references: [id])
   dsId     Int //delivery service Id
   street   String

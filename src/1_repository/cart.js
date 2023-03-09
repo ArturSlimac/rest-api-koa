@@ -24,7 +24,6 @@ const getSavedCartForUser = async (withId) => {
 
 const updateCart = async (testUser, body) => {
   const crtId = await getCartIdByUserId(testUser)
-
   try {
     body.items.forEach(async ({ id, quantity }) => {
       await getPrisma()[tables.cart_items].upsert({

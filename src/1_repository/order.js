@@ -124,8 +124,48 @@ const createOrder = async (
   }
 }
 
+const updateOrderById = async ({ id, delivery_address, boxes }) => {
+  try {
+    delivery_address &&
+      (await getPrisma()[tables.order].update({
+        where: { id },
+        data: {
+          delivery_address: {
+            update: { where: { ordrId: id }, data: { ...delivery_address } },
+          },
+        },
+      }))
+
+    boxes &&
+      (await getPrisma()[tables.order].update({
+        where: { id },
+        data: {
+          box_order: {
+            deleteMany: {},
+            createMany: { data: [...boxes] },
+          },
+        },
+      }))
+  } catch (error) {
+    const logger = getLogger()
+    logger.error("Error in updating order", {
+      error,
+    })
+    throw error
+  }
+}
+
+//helper
+const getStatusOfOrderById = async (id) =>
+  await getPrisma()[tables.order].findUnique({
+    where: { id },
+    select: { status: true },
+  })
+
 module.exports = {
   getAll,
   getById,
   createOrder,
+  updateOrderById,
+  getStatusOfOrderById,
 }

@@ -61,9 +61,33 @@ createOrder.validationScheme = {
   },
 }
 
-const updateOrderById = async (ctx) => {}
+const updateOrderById = async (ctx) => {
+  await ordersService.updateOrderById(ctx.params, ctx.request.body)
+  ctx.status = 204
+}
 
-updateOrderById.validationScheme = {}
+updateOrderById.validationScheme = {
+  params: {
+    id: Joi.number().integer().min(0),
+  },
+  body: Joi.object({
+    delivery_address: Joi.object({
+      street: Joi.string(),
+      streetNr: Joi.string(),
+      zip: Joi.string(),
+      country: Joi.string(),
+    }).optional(),
+    boxes: Joi.array()
+      .items(
+        Joi.object({
+          bxId: Joi.number().integer().positive(),
+          quantity: Joi.number().integer().positive(),
+          price: Joi.number().positive(),
+        })
+      )
+      .optional(),
+  }).or("delivery_address", "boxes"),
+}
 
 module.exports = (app) => {
   const router = new Router({
@@ -73,6 +97,11 @@ module.exports = (app) => {
   router.get("/", validate(getAllOrders.validationScheme), getAllOrders)
   router.get("/:id", validate(getOrderById.validationScheme), getOrderById)
   router.post("/", validate(createOrder.validationScheme), createOrder)
+  router.put(
+    "/:id",
+    validate(updateOrderById.validationScheme),
+    updateOrderById
+  )
 
   app.use(router.routes()).use(router.allowedMethods())
 }

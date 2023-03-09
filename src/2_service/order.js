@@ -3,6 +3,7 @@ const orderRepository = require("../1_repository/order")
 const ServiceError = require("../core/serviceError")
 const DEFAULT_TAKE = 20
 const DEFAULT_SKIP = 0
+const DEFAULT_STATUS_TO_BE_CHANGED = "placed"
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getLogger()
@@ -55,7 +56,21 @@ const createOrder = async (
   })
 }
 
-const updateOrderById = async ({ id, delivery_address, boxes }) => {
+const updateOrderById = async (params, { delivery_address, boxes }) => {
+  const id = Number(params.id)
+
+  const { status } = await orderRepository.getStatusOfOrderById(id)
+
+  if (status !== DEFAULT_STATUS_TO_BE_CHANGED) {
+    throw ServiceError.forbidden(
+      `The order ${id} cannot be changed because the status is not ${DEFAULT_STATUS_TO_BE_CHANGED} anymore`,
+      {
+        id,
+        status,
+      }
+    )
+  }
+
   debugLog(`Updating order with id ${id}`, {
     delivery_address,
     boxes,
