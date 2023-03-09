@@ -2,6 +2,7 @@ const { getPrisma, tables, statusesOrder } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 const purchaserRepository = require("../1_repository/purchaser")
+const cartRepository = require("./cart")
 
 const getAll = async (testPurchaser, skip, take) => {
   const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
@@ -118,6 +119,9 @@ const create = async (
       },
       select: { id: true },
     })
+
+    //claen up cart
+    await cartRepository.update(testPurchaser, [])
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in placing order", {
