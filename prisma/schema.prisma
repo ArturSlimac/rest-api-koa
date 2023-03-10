@@ -30,7 +30,7 @@ model Product {
   price                              Product_price[]
   product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   cart_items                         Cart_items[]
-  order_items                         Order_item[]
+  order_items                        Order_item[]
 }
 
 model Product_description {
@@ -65,15 +65,15 @@ model Product_unit_of_measure_conversion {
 }
 
 model Company {
-  id        Int         @id @default(autoincrement())
-  companyId String      @unique
-  logoLink  String?
-  phoneNr   String?
-  street    String?
-  streetNr  String?
-  country   String?
-  city      String?
-  zipCode   String?
+  id         Int         @id @default(autoincrement())
+  companyId  String      @unique
+  logoLink   String?
+  phoneNr    String?
+  street     String?
+  streetNr   String?
+  country    String?
+  city       String?
+  zipCode    String?
   purchasers Purchaser[]
   orders     Order[]
 }
@@ -88,7 +88,7 @@ model Purchaser {
   lastName    String  @default("anon")
   phoneNumber String  @default("a number")
   cart        Cart[]
-  orders       Order[]
+  orders      Order[]
 }
 
 model Cart {
@@ -120,7 +120,7 @@ model Order {
   currencyId       String
   status           String
   track_trace      String?
-  order_items       Order_item[]
+  order_items      Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
   company          Company?           @relation(fields: [companyId], references: [id])

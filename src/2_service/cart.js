@@ -13,12 +13,21 @@ const getForUser = async (id) => {
   return { count, cart }
 }
 
-const update = async (testPurchaser, body) => {
-  debugLog(`Update cart for user with ID ${testPurchaser}`, { ...body })
-  await cartRepository.update(testPurchaser, body)
+const postItemsInCart = async (testPurchaser, body) => {
+  debugLog(`Post items in cart for user with ID ${testPurchaser}`, { body })
+  await cartRepository.postItemsInCart(testPurchaser, body)
+}
+
+const mergeLocalAndDdCarts = async (testPurchaser, body) => {
+  debugLog(
+    `Merge provided cart items and cart in db for user with ID ${testPurchaser}`,
+    { ...body }
+  )
+  await cartRepository.mergeLocalAndDdCarts(testPurchaser, body)
 }
 
 module.exports = {
   getForUser,
-  update,
+  mergeLocalAndDdCarts,
+  postItemsInCart,
 }

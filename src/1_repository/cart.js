@@ -22,16 +22,40 @@ const getForUser = async (withId) => {
   }
 }
 
-const update = async (testPurchaser, body) => {
+const postItemsInCart = async (testPurchaser, body) => {
+  const crtId = await getCartIdByUserId(testPurchaser)
+
+  try {
+    await getPrisma()[tables.cart].update({
+      where: { id: crtId },
+      data: {
+        cart_items: {
+          deleteMany: {},
+          createMany: {
+            data: [...body],
+          },
+        },
+      },
+    })
+  } catch (error) {
+    const logger = getLogger()
+    logger.error("Error in posting cart", {
+      error,
+    })
+    throw error
+  }
+}
+
+const mergeLocalAndDdCarts = async (testPurchaser, body) => {
+  console.log(body)
   const crtId = await getCartIdByUserId(testPurchaser)
   try {
-    await getPrisma()[tables.cart_items].deleteMany({
-      where: { crtId },
-    })
-    body?.items?.forEach(async ({ id, quantity }) => {
-      await getPrisma()[tables.cart_items].create({
-        data: {
-          prdctId: id,
+    body.forEach(async ({ prdctId, quantity }) => {
+      await getPrisma()[tables.cart_items].upsert({
+        where: { crtId_prdctId: { crtId, prdctId } },
+        update: { quantity },
+        create: {
+          prdctId,
           quantity,
           crtId,
         },
@@ -72,5 +96,6 @@ const getCartIdByUserId = async (prchsrId) => {
 
 module.exports = {
   getForUser,
-  update,
+  mergeLocalAndDdCarts,
+  postItemsInCart,
 }

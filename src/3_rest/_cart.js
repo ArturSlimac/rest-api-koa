@@ -10,19 +10,33 @@ const getCart = async (ctx) => {
 
 getCart.validationScheme = null
 
-const updateCart = async (ctx) => {
-  ctx.body = await cartService.update(testPurchaser, ctx.request.body)
+const mergeLocalAndDdCarts = async (ctx) => {
+  ctx.body = await cartService.mergeLocalAndDdCarts(
+    testPurchaser,
+    ctx.request.body
+  )
 }
 
-updateCart.validationScheme = {
-  body: {
-    items: Joi.array().items(
-      Joi.object({
-        id: Joi.number().integer().positive(),
-        quantity: Joi.number().integer().positive(),
-      })
-    ),
-  },
+mergeLocalAndDdCarts.validationScheme = {
+  body: Joi.array().items(
+    Joi.object({
+      prdctId: Joi.number().integer().positive(),
+      quantity: Joi.number().integer().positive(),
+    })
+  ),
+}
+
+const postItemsInCart = async (ctx) => {
+  ctx.body = await cartService.postItemsInCart(testPurchaser, ctx.request.body)
+}
+
+postItemsInCart.validationScheme = {
+  body: Joi.array().items(
+    Joi.object({
+      prdctId: Joi.number().integer().positive(),
+      quantity: Joi.number().integer().positive(),
+    })
+  ),
 }
 
 module.exports = (app) => {
@@ -31,7 +45,16 @@ module.exports = (app) => {
   })
 
   router.get("/cart", validate(getCart.validationScheme), getCart)
-  router.put("/cart", validate(updateCart.validationScheme), updateCart)
+  router.put(
+    "/cart",
+    validate(mergeLocalAndDdCarts.validationScheme),
+    mergeLocalAndDdCarts
+  )
+  router.post(
+    "/cart",
+    validate(postItemsInCart.validationScheme),
+    postItemsInCart
+  )
 
   app.use(router.routes()).use(router.allowedMethods())
 }

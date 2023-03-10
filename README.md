@@ -80,21 +80,24 @@ You can access the REST API of the server using the following endpoints:
 
 ### PUT
 
-- /api/me/cart : update articles in user's cart
+- /api/me/cart : merge articles provided in body with articles in the cart in the db
+
   - Body:
-    - must be an object with a name `items` and values as an array of `objects`
+
+    - must be an array of `objects`
     - `objects`:
       - `id`: Int (required): a primary key of a product
       - `quantity`: Int (required)
     - example:
+
       ```
-       {
-        items: [
+        [
           { id: 1, quantity: 1 },
           { id: 2, quantity: 2 },
-              ]
-        }
+        ]
+
       ```
+
 - /api/me/orders/`:id` : update the existing whith given `id`
 
   - Body:
@@ -158,3 +161,20 @@ You can access the REST API of the server using the following endpoints:
               ],
       }
     ```
+- /api/me/cart : overwrite items saved in db with provided items in body
+
+  - Body:
+
+    - must be an array of `objects`
+    - `objects`:
+      - `id`: Int (required): a primary key of a product
+      - `quantity`: Int (required)
+    - example:
+
+      ```
+        [
+          { id: 1, quantity: 1 },
+          { id: 2, quantity: 2 },
+        ]
+
+      ```

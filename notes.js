@@ -19,9 +19,7 @@ const bodyOrder = {
   ],
 }
 
-const updateCartBody = {
-  items: [
-    { id: 1, quantity: 1 },
-    { id: 2, quantity: 2 },
-  ],
-}
+const updateCartBody = [
+  { prdctId: 1, quantity: 1 },
+  { prdctId: 2, quantity: 2 },
+]
