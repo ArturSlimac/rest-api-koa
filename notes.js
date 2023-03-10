@@ -1,5 +1,5 @@
 // place order body
-const bodylaceOrder = {
+const bodyOrder = {
   date: "2022-03-25",
   currencyId: "EUR",
   deliveryServiceId: 5,
