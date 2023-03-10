@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
-const { tables } = require("../src/0_data/index")
+const { tables, statusesOrder } = require("../src/0_data/index")
 const { faker } = require("@faker-js/faker")
 const shortid = require("shortid")
 
@@ -15,6 +15,15 @@ async function main() {
   //products
   Array.from([1, 2, 3, 4, 5, 6]).forEach((_) => seedProduct(ctgrId))
   Array.from([1, 2, 3, 4, 5]).forEach((_) => seedProduct(ctgrId1))
+
+  //boxes
+  const type1 = "generic"
+  const amountOfBoxes1 = [1, 2, 3, 4]
+  amountOfBoxes1.forEach(async (_) => await seedBoxes(type1))
+
+  const type2 = "custom"
+  const amountOfBoxes2 = [1, 2, 3, 4, 5, 6]
+  amountOfBoxes2.forEach(async (_) => await seedBoxes(type2))
 
   //customers
   const cmpnId = await seedCompany()
@@ -36,14 +45,10 @@ async function main() {
   prchsrIds1.forEach(async (prchsrId) => await seedCart(prchsrId))
   prchsrIds2.forEach(async (prchsrId) => await seedCart(prchsrId))
 
-  //boxes
-  const type1 = "generic"
-  const amountOfBoxes1 = [1, 2, 3, 4]
-  amountOfBoxes1.forEach(async (_) => await seedBoxes(type1))
-
-  const type2 = "custom"
-  const amountOfBoxes2 = [1, 2, 3, 4, 5, 6]
-  amountOfBoxes2.forEach(async (_) => await seedBoxes(type2))
+  //orders
+  prchsrIds.forEach(async (prchsrId) => await seedOrders(prchsrId))
+  prchsrIds1.forEach(async (prchsrId) => await seedOrders(prchsrId))
+  prchsrIds2.forEach(async (prchsrId) => await seedOrders(prchsrId))
 }
 
 const seedProductCategory = async (categoryId) => {
@@ -165,11 +170,50 @@ const seedBoxes = async (type) => {
   })
 }
 
+const seedOrders = async (prchsrId) => {
+  await prisma[tables.order].create({
+    data: {
+      currencyId: "EUR",
+      prchsrId,
+      orderPostedDate: faker.date.between(),
+      status: statusesOrder.ordered,
+      taxAmount: 125,
+      delivery_address: {
+        create: {
+          dsId: 5,
+          street: faker.address.street(),
+          streetNr: faker.phone.number("##"),
+          zip: faker.address.zipCode(),
+          country: faker.address.country(),
+        },
+      },
+      order_items: {
+        createMany: {
+          data: [
+            { prdctId: 10, quantity: 5, netPrice: 12 },
+            { prdctId: 9, quantity: 6, netPrice: 16 },
+          ],
+        },
+      },
+      box_order: {
+        createMany: {
+          data: [
+            { bxId: 3, quantity: 2, price: 12 },
+            { bxId: 5, quantity: 5, price: 95.5 },
+          ],
+        },
+      },
+    },
+  })
+}
+
 //helpers
 const cleanUpDb = async () => {
-  await prisma[tables.box].deleteMany()
+  await prisma[tables.delivery_address].deleteMany()
   await prisma[tables.order_item].deleteMany()
+  await prisma[tables.box_order].deleteMany()
   await prisma[tables.order].deleteMany()
+  await prisma[tables.box].deleteMany()
   await prisma[tables.cart_items].deleteMany()
   await prisma[tables.cart].deleteMany()
   await prisma[tables.purchaser].deleteMany()
