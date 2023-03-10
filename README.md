@@ -72,7 +72,8 @@ You can access the REST API of the server using the following endpoints:
 - /api/me/orders/`:id` : returns one order with the `id`
 
 - /api/me/profile : shows an overview of all company data as well as all data of all purchasers associated with that company
-- /api/me/notifications : return an overview of notifications
+
+- /api/me/notifications?take={`take`}&skip={`skip`} : return an overview of notifications
   - Query Parameters
     - `take` (optional, default=5): This specifies how many objects should be returned in the list
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
@@ -124,7 +125,7 @@ You can access the REST API of the server using the following endpoints:
 
 ### POST
 
-- /api/me/orders/ : create order in the db
+- /api/me/orders/ : create an order in the db
   - Body:
     - `date`: String (required)
     - `currencyId`: String (required)

@@ -12,6 +12,7 @@ const getAll = async (testPurchaser, skip, take) => {
       take,
       where: {
         cmpnId,
+        status: { not: statusesOrder.delivered },
       },
       select: {
         id: true,
@@ -19,6 +20,7 @@ const getAll = async (testPurchaser, skip, take) => {
         status: true,
         purchaser: { select: { firstName: true, lastName: true } },
       },
+      orderBy: { orderPostedDate: "desc" },
     })
     const count = orders?.length || 0
     return { count, orders }
@@ -73,8 +75,6 @@ const getById = async (testPurchaser, id) => {
         },
       },
     })
-
-    console.log(order)
 
     return order
   } catch (error) {
