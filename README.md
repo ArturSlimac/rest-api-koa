@@ -62,11 +62,20 @@ You can access the REST API of the server using the following endpoints:
 
 - /api/products/`:id` : Fetch a single post by its `id` (`id` - primary key)
 
+- /api/boxes/ : returns all avaliable boxes
+
+- /api/boxes/`:id` : returns one box with the given `id`
 - /api/me/cart : returns all products that user has in their cart and info about the cart
 
-- /api/me/orders/ : returns all orders that user has already made
+- /api/me/orders/ : returns ALL orders of the entire company, not just purchaser's own purchases
 
 - /api/me/orders/`:id` : returns one order with the `id`
+
+- /api/me/profile : shows an overview of all company data as well as all data of all purchasers associated with that company
+- /api/me/notifications : return an overview of notifications
+  - Query Parameters
+    - `take` (optional, default=5): This specifies how many objects should be returned in the list
+    - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 
 ### PUT
 
