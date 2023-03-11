@@ -17,7 +17,14 @@ yarn install
 - Create .env file with following:
 
 ```
-DATABASE_URL="mysql://johndoe:randompassword@localhost:3306/mydb"
+DATABASE_URL="client://johndoe:randompassword@localhost:3306/mydb"
+
+DATABASE_USERNAME = johndoe
+DATABASE_PASSWORD = randompassword
+DATABASE_HOST = localhost
+DATABASE_PORT = 3306
+DATABASE_NAME = mydb
+DATABASE_CLIENT = client
 ```
 
 - You now need to adjust the connection URL to point to your own database.

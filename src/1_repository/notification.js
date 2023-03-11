@@ -24,6 +24,11 @@ const getAll = async (skip, take) => {
   }
 }
 
+const create = async (affectedRows) => {
+  date, ordrId, status, date
+}
+
 module.exports = {
   getAll,
+  create,
 }

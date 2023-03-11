@@ -9,10 +9,4 @@ module.exports = {
     maxAge: 3 * 60 * 60,
   },
   port: 9000,
-  database: {
-    client: "mysql2",
-    host: "localhost",
-    port: 3306,
-    name: "sdp2_g04_db",
-  },
 }

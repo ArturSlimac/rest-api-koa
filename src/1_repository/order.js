@@ -121,7 +121,7 @@ const create = async (
     })
 
     //claen up cart
-    await cartRepository.update(testPurchaser, [])
+    await cartRepository.postItemsInCart(testPurchaser, [])
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in placing order", {

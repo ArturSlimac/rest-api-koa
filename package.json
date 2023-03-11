@@ -14,8 +14,10 @@
     "koa-bodyparser": "^4.3.0",
     "node-emoji": "^1.11.0",
     "prisma": "^4.10.1",
+    "sequelize": "^6.29.3",
     "serialize-error": "8.1.0",
     "shortid": "^2.2.16",
+    "sqlite3": "^5.1.4",
     "winston": "^3.8.2"
   },
   "devDependencies": {
