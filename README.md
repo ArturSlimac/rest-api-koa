@@ -185,3 +185,22 @@ You can access the REST API of the server using the following endpoints:
         ]
 
       ```
+# Testing
+- First copy all the data of your database into a new database "mydb_test"
+
+- Create a new file called .env.test containing the following:
+```
+DATABASE_URL="client://johndoe:randompassword@localhost:3306/mydb_test"
+NODE_ENV=test
+
+DATABASE_USERNAME = johndoe
+DATABASE_PASSWORD = randompassword
+DATABASE_HOST = localhost
+DATABASE_PORT = 3306
+DATABASE_NAME = mydb_test
+DATABASE_CLIENT = client
+```
+- Run the following command in VSCode:
+```
+yarn test
+```
