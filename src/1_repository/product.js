@@ -74,7 +74,7 @@ const getById = async (id) => {
         },
       },
     })
-    const formattedProduct = imgLinksFormatter([product])
+    const [formattedProduct] = imgLinksFormatter([product])
     return formattedProduct
   } catch (error) {
     const logger = getLogger()
