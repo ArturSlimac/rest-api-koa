@@ -8,7 +8,6 @@ const getAll = async (skip, take) => {
       take,
       select: {
         id: true,
-        imgLink: true,
         unitsInStock: true,
         productAvailability: true,
         ctgrId: true,
@@ -19,12 +18,22 @@ const getAll = async (skip, take) => {
         description: {
           select: { name: true },
         },
+        product_images: {
+          select: {
+            image: {
+              select: { link: true },
+            },
+          },
+        },
       },
     })
     const totalAmountofProducts = await getPrisma()[tables.product].count()
 
     const count = products?.length || 0
-    return { totalAmountofProducts, count, products }
+
+    const formattedProducts = imgLinksFormatter(products)
+
+    return { totalAmountofProducts, count, products: formattedProducts }
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in getting all products", {
@@ -43,7 +52,6 @@ const getById = async (id) => {
         unitOfMeasureId: true,
         productAvailability: true,
         unitsInStock: true,
-        imgLink: true,
         ctgrId: true,
         description: {
           select: {
@@ -57,10 +65,17 @@ const getById = async (id) => {
         price: {
           select: { price: true, currencyId: true, unitOfMeasureId: true },
         },
+        product_images: {
+          select: {
+            image: {
+              select: { link: true },
+            },
+          },
+        },
       },
     })
-
-    return product
+    const formattedProduct = imgLinksFormatter([product])
+    return formattedProduct
   } catch (error) {
     const logger = getLogger()
     logger.error(`Error in getting product with id ${id}`, {
@@ -89,6 +104,14 @@ const updateQuantity = async (id, quantity) => {
     })
     throw error
   }
+}
+
+//helpers
+const imgLinksFormatter = (products) => {
+  return products.map((product) => ({
+    ...product,
+    product_images: product.product_images.map((image) => image.image.link),
+  }))
 }
 
 module.exports = {

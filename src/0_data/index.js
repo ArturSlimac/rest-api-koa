@@ -100,6 +100,8 @@ const tables = Object.freeze({
   box: "box",
   box_order: "box_order",
   notification: "notification",
+  imageLink: "imageLink",
+  product_images: "product_images",
 })
 
 const statusesOrder = Object.freeze({

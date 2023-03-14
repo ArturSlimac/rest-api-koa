@@ -12,7 +12,7 @@ async function main() {
   const ctgrId = await seedProductCategory("category1")
   const ctgrId1 = await seedProductCategory("category2")
 
-  //products
+  //products with images
   Array.from([1, 2, 3, 4, 5, 6]).forEach((_) => seedProduct(ctgrId))
   Array.from([1, 2, 3, 4, 5]).forEach((_) => seedProduct(ctgrId1))
 
@@ -71,7 +71,6 @@ const seedProduct = async (ctgrId) => {
       unitOfMeasureId: "EA",
       productAvailability: "STOCK",
       unitsInStock: 100,
-      imgLink: faker.image.cats(),
       description: {
         create: {
           languageId: "nl",
@@ -87,6 +86,15 @@ const seedProduct = async (ctgrId) => {
           price: Number(faker.commerce.price()),
           unitOfMeasureId: "EA",
           quantity: 1,
+        },
+      },
+      product_images: {
+        create: {
+          image: {
+            create: {
+              link: faker.image.cats(),
+            },
+          },
         },
       },
     },
@@ -212,14 +220,17 @@ const cleanUpDb = async () => {
   await prisma[tables.delivery_address].deleteMany()
   await prisma[tables.order_item].deleteMany()
   await prisma[tables.box_order].deleteMany()
-  await prisma[tables.order].deleteMany()
   await prisma[tables.box].deleteMany()
   await prisma[tables.cart_items].deleteMany()
   await prisma[tables.cart].deleteMany()
+  await prisma[tables.notification].deleteMany()
+  await prisma[tables.order].deleteMany()
   await prisma[tables.purchaser].deleteMany()
   await prisma[tables.company].deleteMany()
   await prisma[tables.product_price].deleteMany()
   await prisma[tables.product_description].deleteMany()
+  await prisma[tables.product_images].deleteMany()
+  await prisma[tables.imageLink].deleteMany()
   await prisma[tables.product].deleteMany()
   await prisma[tables.product_category].deleteMany()
 }

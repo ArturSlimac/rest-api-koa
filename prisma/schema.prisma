@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Product_category {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
+  id         Int       @id @default(autoincrement())
+  syncId     Int?
   categoryId String    @unique
   name       String?
   product    Product[]
@@ -25,7 +25,6 @@ model Product {
   unitOfMeasureId                    String
   productAvailability                String?
   unitsInStock                       Int?
-  imgLink                            String?
   ctgrId                             Int
   category                           Product_category                     @relation(fields: [ctgrId], references: [id])
   description                        Product_description[]
@@ -33,11 +32,26 @@ model Product {
   product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   cart_items                         Cart_items[]
   order_items                        Order_item[]
+  product_images                     Product_images[]
+}
+
+model ImageLink {
+  id             Int              @id @default(autoincrement())
+  link           String
+  product_images Product_images[]
+}
+
+model Product_images {
+  id      Int       @id @default(autoincrement())
+  prdctId Int
+  product Product   @relation(fields: [prdctId], references: [id])
+  imgId  Int
+  image   ImageLink @relation(fields: [imgId], references: [id])
 }
 
 model Product_description {
-  pdId   Int  @id @default(autoincrement())
-  syncId Int?
+  pdId       Int     @id @default(autoincrement())
+  syncId     Int?
   prdctId    Int
   product    Product @relation(fields: [prdctId], references: [id])
   languageId String
@@ -48,8 +62,8 @@ model Product_description {
 }
 
 model Product_price {
-  ppId   Int  @id @default(autoincrement())
-  syncId Int?
+  ppId            Int     @id @default(autoincrement())
+  syncId          Int?
   prdctId         Int
   product         Product @relation(fields: [prdctId], references: [id])
   currencyId      String?
@@ -59,8 +73,8 @@ model Product_price {
 }
 
 model Product_unit_of_measure_conversion {
-  converterId Int  @id @default(autoincrement())
-  syncId      Int?
+  converterId       Int     @id @default(autoincrement())
+  syncId            Int?
   prdctId           Int
   product           Product @relation(fields: [prdctId], references: [id])
   fromUnitOfMeasure String?
@@ -86,8 +100,8 @@ model Company {
 }
 
 model Purchaser {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
+  id          Int     @id @default(autoincrement())
+  syncId      Int?
   purchaserId String  @unique
   cmpnId      Int
   company     Company @relation(fields: [cmpnId], references: [id])
@@ -119,8 +133,8 @@ model Cart_items {
 }
 
 model Order {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
+  id               Int                @id @default(autoincrement())
+  syncId           Int?
   prchsrId         Int
   purchaser        Purchaser          @relation(fields: [prchsrId], references: [id])
   processedById    Int?
@@ -135,7 +149,7 @@ model Order {
   box_order        Box_order[]
   company          Company?           @relation(fields: [companyId], references: [id])
   companyId        Int?
-  Notification Notification[]
+  Notification     Notification[]
 }
 
 model Order_item {
@@ -149,6 +163,7 @@ model Order_item {
   unitOfMeasureId String?
   netPrice        Float?
   netAmount       Float?
+
   @@unique([ordrId, prdctId])
 }
 
@@ -164,8 +179,8 @@ model Delivery_address {
 }
 
 model Box {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
+  id                    Int         @id @default(autoincrement())
+  syncId                Int?
   name                  String      @unique
   type                  String      @default("generic")
   width                 Float
@@ -177,8 +192,8 @@ model Box {
 }
 
 model Box_order {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
+  id       Int   @id @default(autoincrement())
+  syncId   Int?
   bxId     Int
   box      Box   @relation(fields: [bxId], references: [id])
   ordrId   Int
@@ -188,7 +203,7 @@ model Box_order {
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
+  id     Int      @id @default(autoincrement())
   date   DateTime
   status String
   ordrId Int
