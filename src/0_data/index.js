@@ -35,10 +35,10 @@ const createTrigger = async () => {
     // Create the trigger
     await sequelize.query(`
       CREATE TRIGGER test_trigger
-      AFTER UPDATE ON sdp2_g04_db.${tables.order}
+      AFTER UPDATE ON ${DATABASE_DATABASE}.${tables.order}
       FOR EACH ROW
       BEGIN
-        INSERT INTO sdp2_g04_db.${tables.notification}(date, status, ordrId)
+        INSERT INTO ${DATABASE_DATABASE}.${tables.notification}(date, status, ordrId)
         VALUES (NOW(),'new', OLD.id);
       END;
     `)
