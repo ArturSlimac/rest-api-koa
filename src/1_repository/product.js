@@ -7,6 +7,7 @@ const getAll = async (skip, take) => {
       skip,
       take,
       select: {
+        _count: true,
         id: true,
         imgLink: true,
         unitsInStock: true,

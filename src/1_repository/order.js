@@ -15,6 +15,7 @@ const getAll = async (testPurchaser, skip, take) => {
         status: { not: statusesOrder.delivered },
       },
       select: {
+        _count: true,
         id: true,
         orderPostedDate: true,
         status: true,
