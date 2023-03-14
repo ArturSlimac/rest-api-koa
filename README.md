@@ -74,8 +74,10 @@ You can access the REST API of the server using the following endpoints:
 - /api/boxes/`:id` : returns one box with the given `id`
 - /api/me/cart : returns all products that user has in their cart and info about the cart
 
-- /api/me/orders/ : returns ALL orders of the entire company, not just purchaser's own purchases
-
+- /api/me/orders/?take={`take`}&skip={`skip`} : returns ALL orders of the entire company, not just purchaser's own purchases
+  - Query Parameters
+    - `take` (optional, default=20): This specifies how many objects should be returned in the list
+    - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 - /api/me/orders/`:id` : returns one order with the `id`
 
 - /api/me/profile : shows an overview of all company data as well as all data of all purchasers associated with that company
@@ -185,10 +187,13 @@ You can access the REST API of the server using the following endpoints:
         ]
 
       ```
+
 # Testing
+
 - First copy all the data of your database into a new database "mydb_test"
 
 - Create a new file called .env.test containing the following:
+
 ```
 DATABASE_URL="client://johndoe:randompassword@localhost:3306/mydb_test"
 NODE_ENV=test
@@ -200,7 +205,9 @@ DATABASE_PORT = 3306
 DATABASE_NAME = mydb_test
 DATABASE_CLIENT = client
 ```
+
 - Run the following command in VSCode:
+
 ```
 yarn test
 ```

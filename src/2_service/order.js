@@ -18,13 +18,13 @@ const getAll = async (testPurchaser, query) => {
   debugLog(
     `Fetching all orders for user ${testPurchaser}, skip ${skip}, take ${take}`
   )
-  const { count, orders } = await orderRepository.getAll(
+  const { totalAmountofOrders, count, orders } = await orderRepository.getAll(
     testPurchaser,
     skip,
     take
   )
 
-  return { skip, take, count, orders }
+  return { totalAmountofOrders, skip, take, count, orders }
 }
 
 const getById = async (testPurchaser, params) => {

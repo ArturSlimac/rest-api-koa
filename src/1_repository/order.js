@@ -23,8 +23,10 @@ const getAll = async (testPurchaser, skip, take) => {
       },
       orderBy: { orderPostedDate: "desc" },
     })
+
+    const totalAmountofOrders = await getPrisma()[tables.order].count()
     const count = orders?.length || 0
-    return { count, orders }
+    return { totalAmountofOrders, count, orders }
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in fetching all orders", {
