@@ -14,9 +14,10 @@ const getAll = async (query) => {
   const take = Number(query.take) || DEFAULT_TAKE
 
   debugLog(`Fetching all products, skip ${skip}, take ${take}`)
-  const { count, products } = await productRepository.getAll(skip, take)
+  const { totalAmountofProducts, count, products } =
+    await productRepository.getAll(skip, take)
 
-  return { skip, take, count, products }
+  return { totalAmountofProducts, skip, take, count, products }
 }
 
 const getById = async (params) => {

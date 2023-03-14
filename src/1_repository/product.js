@@ -21,8 +21,10 @@ const getAll = async (skip, take) => {
         },
       },
     })
+    const totalAmountofProducts = await getPrisma()[tables.product].count()
+
     const count = products?.length || 0
-    return { count, products }
+    return { totalAmountofProducts, count, products }
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in getting all products", {
