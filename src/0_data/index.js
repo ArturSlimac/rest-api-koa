@@ -2,31 +2,17 @@ const config = require("config")
 const { getLogger } = require("../core/logger")
 const { PrismaClient } = require("@prisma/client")
 
-const DATABASE_CLIENT = config.get("database.client")
-const DATABASE_USERNAME = config.get("database.username")
-const DATABASE_PASSWORD = config.get("database.password")
-const DATABASE_HOST = config.get("database.host")
-const DATABASE_PORT = config.get("database.port")
-const DATABASE_DATABASE = config.get("database.name")
-
-const dbLink = `${DATABASE_CLIENT}://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}`
-
 let prisma
 let logger
-
-const prismaLogger = (logger, level) => (message) => {
-  if (message.sql) {
-    logger.log(level, message.sql)
-  } else {
-    logger.log(level, JSON.stringify(message))
-  }
-}
 
 const initializeDatabase = async () => {
   logger = getLogger()
   logger.info("Initializing connection to the database")
 
-  prisma = new PrismaClient()
+  prisma = new PrismaClient({
+    log: ["info", "warn", "error"],
+  })
+
   // control if db up and runs
   try {
     await prisma.$connect()
