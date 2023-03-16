@@ -223,7 +223,6 @@ const cleanUpDb = async () => {
   await prisma[tables.box].deleteMany()
   await prisma[tables.cart_items].deleteMany()
   await prisma[tables.cart].deleteMany()
-  await prisma[tables.notification].deleteMany()
   await prisma[tables.order].deleteMany()
   await prisma[tables.purchaser].deleteMany()
   await prisma[tables.company].deleteMany()

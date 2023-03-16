@@ -11,7 +11,6 @@ const installRest = require("./3_rest")
 const {
   initializeDatabase,
   shutdownData,
-  createTrigger,
 } = require("./0_data/index")
 
 const NODE_ENV = config.get("env")
@@ -26,8 +25,6 @@ module.exports = createServer = async () => {
     disabled: LOG_DISABLED,
     defaultMeta: { NODE_ENV },
   })
-
-  await createTrigger()
 
   await initializeDatabase()
 

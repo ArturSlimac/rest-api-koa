@@ -1,7 +1,6 @@
 const config = require("config")
 const { getLogger } = require("../core/logger")
 const { PrismaClient } = require("@prisma/client")
-const Sequelize = require("sequelize")
 
 const DATABASE_CLIENT = config.get("database.client")
 const DATABASE_USERNAME = config.get("database.username")
@@ -20,34 +19,6 @@ const prismaLogger = (logger, level) => (message) => {
     logger.log(level, message.sql)
   } else {
     logger.log(level, JSON.stringify(message))
-  }
-}
-
-const createTrigger = async () => {
-  logger = getLogger()
-  logger.info("Creating trigger to keep updates for orders")
-
-  const sequelize = new Sequelize(dbLink)
-  try {
-    // Drop the trigger if it already exists
-    await sequelize.query("DROP TRIGGER IF EXISTS test_trigger;")
-
-    // Create the trigger
-    await sequelize.query(`
-      CREATE TRIGGER test_trigger
-      AFTER UPDATE ON ${DATABASE_DATABASE}.${tables.order}
-      FOR EACH ROW
-      BEGIN
-        INSERT INTO ${DATABASE_DATABASE}.${tables.notification}(date, status, ordrId)
-        VALUES (NOW(),'new', OLD.id);
-      END;
-    `)
-    logger.info("Trigger created successfully")
-  } catch (error) {
-    logger.error(error.message, { error })
-    throw new Error("Could not create trigger")
-  } finally {
-    await sequelize.close()
   }
 }
 
@@ -125,5 +96,4 @@ module.exports = {
   shutdownData,
   statusesOrder,
   statusesNotification,
-  createTrigger,
 }

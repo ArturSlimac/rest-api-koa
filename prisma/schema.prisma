@@ -45,7 +45,7 @@ model Product_images {
   id      Int       @id @default(autoincrement())
   prdctId Int
   product Product   @relation(fields: [prdctId], references: [id])
-  imgId  Int
+  imgId   Int
   image   ImageLink @relation(fields: [imgId], references: [id])
 }
 
@@ -149,7 +149,6 @@ model Order {
   box_order        Box_order[]
   company          Company?           @relation(fields: [companyId], references: [id])
   companyId        Int?
-  Notification     Notification[]
 }
 
 model Order_item {
@@ -200,12 +199,4 @@ model Box_order {
   order    Order @relation(fields: [ordrId], references: [id])
   price    Float
   quantity Int
-}
-
-model Notification {
-  id     Int      @id @default(autoincrement())
-  date   DateTime
-  status String
-  ordrId Int
-  order  Order    @relation(fields: [ordrId], references: [id])
 }
