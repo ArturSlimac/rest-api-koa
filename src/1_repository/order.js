@@ -72,7 +72,7 @@ const getById = async (testPurchaser, id) => {
             quantity: true,
             price: true,
             box: {
-              select: { type: true },
+              select: { type: true, id: true },
             },
           },
         },
