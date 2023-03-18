@@ -68,6 +68,11 @@ You can access the REST API of the server using the following endpoints:
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 
 - /api/products/`:id` : Fetch a single post by its `id` (`id` - primary key)
+- /api/categories?take={`take`}&skip={`skip`} : Fetch all categories
+
+  - Query Parameters
+    - `take` (optional, default=20): This specifies how many objects should be returned in the list
+    - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 
 - /api/boxes/ : returns all avaliable boxes
 

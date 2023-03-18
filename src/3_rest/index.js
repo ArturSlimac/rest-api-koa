@@ -4,6 +4,7 @@ const installCartRouter = require("./_cart")
 const installOrderRouter = require("./_order")
 const installBoxRouter = require("./_box")
 const installPurchaserRouter = require("./_purchaser")
+const installCategoryRouter = require("./_categogy")
 
 module.exports = (app) => {
   const router = new Router({
@@ -15,6 +16,7 @@ module.exports = (app) => {
   installOrderRouter(router)
   installBoxRouter(router)
   installPurchaserRouter(router)
+  installCategoryRouter(router)
 
   app.use(router.routes()).use(router.allowedMethods())
 }
