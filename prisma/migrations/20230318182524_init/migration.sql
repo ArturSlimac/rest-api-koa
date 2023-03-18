@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE `Product_category` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `categoryId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
 
@@ -11,11 +12,11 @@ CREATE TABLE `Product_category` (
 -- CreateTable
 CREATE TABLE `Product` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `productId` VARCHAR(191) NOT NULL,
     `unitOfMeasureId` VARCHAR(191) NOT NULL,
     `productAvailability` VARCHAR(191) NULL,
     `unitsInStock` INTEGER NULL,
-    `imgLink` VARCHAR(191) NULL,
     `ctgrId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Product_productId_key`(`productId`),
@@ -23,8 +24,26 @@ CREATE TABLE `Product` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `ImageLink` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `link` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Product_images` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `prdctId` INTEGER NOT NULL,
+    `imgId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Product_description` (
     `pdId` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `prdctId` INTEGER NOT NULL,
     `languageId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
@@ -38,18 +57,21 @@ CREATE TABLE `Product_description` (
 -- CreateTable
 CREATE TABLE `Product_price` (
     `ppId` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `prdctId` INTEGER NOT NULL,
     `currencyId` VARCHAR(191) NULL,
     `price` DOUBLE NULL,
     `unitOfMeasureId` VARCHAR(191) NULL,
     `quantity` INTEGER NULL,
 
+    UNIQUE INDEX `Product_price_prdctId_currencyId_price_key`(`prdctId`, `currencyId`, `price`),
     PRIMARY KEY (`ppId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Product_unit_of_measure_conversion` (
     `converterId` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `prdctId` INTEGER NOT NULL,
     `fromUnitOfMeasure` VARCHAR(191) NULL,
     `toUnitOfMeasure` VARCHAR(191) NULL,
@@ -62,6 +84,7 @@ CREATE TABLE `Product_unit_of_measure_conversion` (
 -- CreateTable
 CREATE TABLE `Company` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `companyId` VARCHAR(191) NOT NULL,
     `logoLink` VARCHAR(191) NULL,
     `phoneNr` VARCHAR(191) NULL,
@@ -78,6 +101,7 @@ CREATE TABLE `Company` (
 -- CreateTable
 CREATE TABLE `Purchaser` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `purchaserId` VARCHAR(191) NOT NULL,
     `cmpnId` INTEGER NOT NULL,
     `auth0Id` VARCHAR(191) NOT NULL DEFAULT '12345',
@@ -106,14 +130,17 @@ CREATE TABLE `Cart_items` (
     `prdctId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
 
+    UNIQUE INDEX `Cart_items_crtId_prdctId_key`(`crtId`, `prdctId`),
     PRIMARY KEY (`ci_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Order` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `prchsrId` INTEGER NOT NULL,
     `processedById` INTEGER NULL,
+    `orderReference` VARCHAR(191) NULL,
     `orderPostedDate` DATETIME(3) NOT NULL,
     `taxAmount` DOUBLE NOT NULL,
     `currencyId` VARCHAR(191) NOT NULL,
@@ -127,11 +154,13 @@ CREATE TABLE `Order` (
 -- CreateTable
 CREATE TABLE `Order_item` (
     `orderItemId` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `ordrId` INTEGER NOT NULL,
     `prdctId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
     `unitOfMeasureId` VARCHAR(191) NULL,
     `netPrice` DOUBLE NULL,
+    `netAmount` DOUBLE NULL,
 
     UNIQUE INDEX `Order_item_ordrId_prdctId_key`(`ordrId`, `prdctId`),
     PRIMARY KEY (`orderItemId`)
@@ -154,6 +183,7 @@ CREATE TABLE `Delivery_address` (
 -- CreateTable
 CREATE TABLE `Box` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `type` VARCHAR(191) NOT NULL DEFAULT 'generic',
     `width` DOUBLE NOT NULL,
@@ -169,6 +199,7 @@ CREATE TABLE `Box` (
 -- CreateTable
 CREATE TABLE `Box_order` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
     `bxId` INTEGER NOT NULL,
     `ordrId` INTEGER NOT NULL,
     `price` DOUBLE NOT NULL,
@@ -177,18 +208,14 @@ CREATE TABLE `Box_order` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `Notification` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `date` VARCHAR(191) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
-    `ordrId` INTEGER NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 -- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_ctgrId_fkey` FOREIGN KEY (`ctgrId`) REFERENCES `Product_category`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Product_images` ADD CONSTRAINT `Product_images_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Product_images` ADD CONSTRAINT `Product_images_imgId_fkey` FOREIGN KEY (`imgId`) REFERENCES `ImageLink`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Product_description` ADD CONSTRAINT `Product_description_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -231,6 +258,3 @@ ALTER TABLE `Box_order` ADD CONSTRAINT `Box_order_bxId_fkey` FOREIGN KEY (`bxId`
 
 -- AddForeignKey
 ALTER TABLE `Box_order` ADD CONSTRAINT `Box_order_ordrId_fkey` FOREIGN KEY (`ordrId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Notification` ADD CONSTRAINT `Notification_ordrId_fkey` FOREIGN KEY (`ordrId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

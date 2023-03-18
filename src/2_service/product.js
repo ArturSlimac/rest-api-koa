@@ -10,12 +10,31 @@ const debugLog = (message, meta = {}) => {
 }
 
 const getAll = async (query) => {
+  console.log(query)
   const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 
-  debugLog(`Fetching all products, skip ${skip}, take ${take}`)
+  const filter = query.filter && JSON.parse(query.filter)
+  const categoryId = filter?.category || undefined
+  const priceRange = filter?.price || undefined
+  const nameLike = filter?.name || undefined
+
+  const { sort_by } = query || undefined
+  const { order_by } = query || undefined
+
+  debugLog(
+    `Fetching all products, skip ${skip}, take ${take}, categoryId ${categoryId}, priceRange ${priceRange}, nameLike ${nameLike}, sort_by ${sort_by}, order_by ${order_by}`
+  )
   const { totalAmountofProducts, count, products } =
-    await productRepository.getAll(skip, take)
+    await productRepository.getAll(
+      skip,
+      take,
+      categoryId,
+      priceRange,
+      nameLike,
+      sort_by,
+      order_by
+    )
 
   return { totalAmountofProducts, skip, take, count, products }
 }

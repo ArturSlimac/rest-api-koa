@@ -8,10 +8,7 @@ const { serializeError } = require("serialize-error")
 const ServiceError = require("./core/serviceError")
 const installRest = require("./3_rest")
 
-const {
-  initializeDatabase,
-  shutdownData,
-} = require("./0_data/index")
+const { initializeDatabase, shutdownData } = require("./0_data/index")
 
 const NODE_ENV = config.get("env")
 const CORS_ORIGINS = config.get("cors.origins")

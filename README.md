@@ -61,11 +61,20 @@ You can access the REST API of the server using the following endpoints:
 
 ### GET
 
-- /api/products?take={`take`}&skip={`skip`} : Fetch all products
+- /api/products?filter={`"category"`:`ctgrId`, `"price"`:`[min,max]`, `"name"`:`name`}&`sort_by`=`sort`&`order_by`=`desc`&`take`=`take`&`skip`=`skip` : Fetch all products
 
   - Query Parameters
-    - `take` (optional, default=20): This specifies how many objects should be returned in the list
-    - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
+
+    - `take` : Int (optional, default=20): This specifies how many objects should be returned in the list
+    - `skip` : Int (optional): This specifies how many of the returned objects in the list should be skipped
+    - `filter` (optional): an object containing options for filtering
+
+      - `category` : Int (Optional): `id` for the category productcs from whcih one should be returned
+      - `price` : Array (optinal): range of price [``min``(includ), ``max``(include)] for which products should be selected
+      - `name` : String (optional): can be used for serching through products by its names
+
+    - `sort_by` : String (optional): provides sorting by `price` or `category`
+    - `order_by` : String (optional): provides sorting `asc` (default) or `desc`
 
 - /api/products/`:id` : Fetch a single post by its `id` (`id` - primary key)
 - /api/categories?take={`take`}&skip={`skip`} : Fetch all categories

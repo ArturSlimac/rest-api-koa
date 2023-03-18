@@ -70,6 +70,8 @@ model Product_price {
   price           Float?
   unitOfMeasureId String?
   quantity        Int?
+
+  @@unique([prdctId, currencyId, price])
 }
 
 model Product_unit_of_measure_conversion {
