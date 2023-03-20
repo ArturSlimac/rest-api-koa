@@ -32,7 +32,7 @@ DATABASE_CLIENT = client
 - Run the following command to create your SQL database file
 
 ```
-yarn prisma migrate dev --name init
+yarn prisma migrate dev 
 ```
 
 - Run seeds. The seed file in prisma/seed.js will be executed and your database will be populated with the sample data. THIS WILL DELETE ALL DATA FROM THE DB BEFORE SEEDING
@@ -61,6 +61,8 @@ You can access the REST API of the server using the following endpoints:
 
 ### GET
 
+#### Products
+
 - /api/products?filter={`"category"`:`ctgrId`, `"price"`:`[min,max]`, `"name"`:`name`}&`sort_by`=`sort`&`order_by`=`desc`&`take`=`take`&`skip`=`skip` : Fetch all products
 
   - Query Parameters
@@ -77,32 +79,35 @@ You can access the REST API of the server using the following endpoints:
     - `order_by` : String (optional): provides sorting `asc` (default) or `desc`
 
 - /api/products/`:id` : Fetch a single post by its `id` (`id` - primary key)
+
+#### Categories
+
 - /api/categories?take={`take`}&skip={`skip`} : Fetch all categories
 
   - Query Parameters
     - `take` (optional, default=20): This specifies how many objects should be returned in the list
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 
+#### Boxes
 - /api/boxes/ : returns all avaliable boxes
 
 - /api/boxes/`:id` : returns one box with the given `id`
+
+#### Cart
 - /api/me/cart : returns all products that user has in their cart and info about the cart
 
+#### Orders
 - /api/me/orders/?take={`take`}&skip={`skip`} : returns ALL orders of the entire company, not just purchaser's own purchases
   - Query Parameters
     - `take` (optional, default=20): This specifies how many objects should be returned in the list
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 - /api/me/orders/`:id` : returns one order with the `id`
 
+#### Profile
 - /api/me/profile : shows an overview of all company data as well as all data of all purchasers associated with that company
 
-- /api/me/notifications?take={`take`}&skip={`skip`} : return an overview of notifications
-  - Query Parameters
-    - `take` (optional, default=5): This specifies how many objects should be returned in the list
-    - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
-
 ### PUT
-
+#### Cart
 - /api/me/cart : merge articles provided in body with articles in the cart in the db
 
   - Body:
@@ -121,6 +126,7 @@ You can access the REST API of the server using the following endpoints:
 
       ```
 
+#### Orders
 - /api/me/orders/`:id` : update the existing whith given `id`
 
   - Body:
@@ -150,7 +156,7 @@ You can access the REST API of the server using the following endpoints:
   ```
 
 ### POST
-
+#### Orders
 - /api/me/orders/ : create an order in the db
   - Body:
     - `date`: String (required)
@@ -184,6 +190,7 @@ You can access the REST API of the server using the following endpoints:
               ],
       }
     ```
+#### Cart    
 - /api/me/cart : overwrite items saved in db with provided items in body
 
   - Body:

@@ -179,6 +179,14 @@ const seedBoxes = async (type) => {
 }
 
 const seedOrders = async (prchsrId) => {
+  const { id: prdctId } = await prisma[tables.product].findFirst({
+    select: { id: true },
+  })
+
+  const { id: bxId } = await prisma[tables.product].findFirst({
+    select: { id: true },
+  })
+
   await prisma[tables.order].create({
     data: {
       currencyId: "EUR",
@@ -197,18 +205,12 @@ const seedOrders = async (prchsrId) => {
       },
       order_items: {
         createMany: {
-          data: [
-            { prdctId: 10, quantity: 5, netPrice: 12 },
-            { prdctId: 9, quantity: 6, netPrice: 16 },
-          ],
+          data: [{ prdctId, quantity: 5, netPrice: 12 }],
         },
       },
       box_order: {
         createMany: {
-          data: [
-            { bxId: 3, quantity: 2, price: 12 },
-            { bxId: 5, quantity: 5, price: 95.5 },
-          ],
+          data: [{ bxId, quantity: 2, price: 12 }],
         },
       },
     },

@@ -145,12 +145,12 @@ model Order {
   taxAmount        Float
   currencyId       String
   status           String
-  track_trace      String?
   order_items      Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
   company          Company?           @relation(fields: [companyId], references: [id])
   companyId        Int?
+  track_trace      TrackTrace[] 
 }
 
 model Order_item {
@@ -201,4 +201,14 @@ model Box_order {
   order    Order @relation(fields: [ordrId], references: [id])
   price    Float
   quantity Int
+}
+
+model TrackTrace {
+  id           Int     @id @default(autoincrement())
+  syncId       Int?
+  trackcode    String?
+  verification String?
+  typeOfVerif  String?
+  ordrId       Int
+  order        Order   @relation(fields: [ordrId], references: [id])
 }

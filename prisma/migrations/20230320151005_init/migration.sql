@@ -145,7 +145,6 @@ CREATE TABLE `Order` (
     `taxAmount` DOUBLE NOT NULL,
     `currencyId` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
-    `track_trace` VARCHAR(191) NULL,
     `companyId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -208,6 +207,18 @@ CREATE TABLE `Box_order` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `TrackTrace` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `syncId` INTEGER NULL,
+    `ordrId` INTEGER NOT NULL,
+    `trackcode` VARCHAR(191) NULL,
+    `verification` VARCHAR(191) NULL,
+    `typeOfVerif` VARCHAR(191) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Product` ADD CONSTRAINT `Product_ctgrId_fkey` FOREIGN KEY (`ctgrId`) REFERENCES `Product_category`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -258,3 +269,6 @@ ALTER TABLE `Box_order` ADD CONSTRAINT `Box_order_bxId_fkey` FOREIGN KEY (`bxId`
 
 -- AddForeignKey
 ALTER TABLE `Box_order` ADD CONSTRAINT `Box_order_ordrId_fkey` FOREIGN KEY (`ordrId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `TrackTrace` ADD CONSTRAINT `TrackTrace_ordrId_fkey` FOREIGN KEY (`ordrId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
