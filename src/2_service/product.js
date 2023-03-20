@@ -10,7 +10,6 @@ const debugLog = (message, meta = {}) => {
 }
 
 const getAll = async (query) => {
-  console.log(query)
   const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 

@@ -2,6 +2,7 @@ const Router = require("@koa/router")
 const productsService = require("../2_service/product")
 const Joi = require("joi")
 const validate = require("./_validator")
+const querystring = require("koa-qs")
 
 const getAllProducts = async (ctx) => {
   ctx.body = await productsService.getAll(ctx.query)
@@ -11,14 +12,17 @@ getAllProducts.validationScheme = {
   query: {
     take: Joi.number().integer().min(0).optional(),
     skip: Joi.number().integer().min(0).optional(),
+    // filter: Joi.optional(),
     filter: Joi.object({
       category: Joi.number().integer().min(0).optional(),
       price: Joi.array()
         .length(2)
         .items(Joi.number().integer().min(0).optional())
         .optional(),
-      name: Joi.string().optional(),
+      name: Joi.string().allow("").optional(),
     }).optional(),
+    sort_by: Joi.string().valid("category", "price", "name"),
+    order_by: Joi.string().valid("asc", "desc"),
   },
 }
 
@@ -37,7 +41,14 @@ module.exports = (app) => {
     prefix: "/products",
   })
 
-  // router.get("/", validate(getAllProducts.validationScheme), getAllProducts)
+  // router.get(
+  //   "/",
+  //   (ctx, next) => {
+  //     ctx.query.filter = JSON.parse(ctx.query.filter)
+  //     validate(getAllProducts.validationScheme)(ctx, next)
+  //   },
+  //   getAllProducts
+  // )
   router.get("/", getAllProducts)
 
   router.get("/:id", validate(getProductById.validationScheme), getProductById)

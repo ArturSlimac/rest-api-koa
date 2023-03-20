@@ -26,6 +26,7 @@ module.exports = createServer = async () => {
   await initializeDatabase()
 
   const app = new Koa()
+
   const logger = getLogger()
 
   app.use(
