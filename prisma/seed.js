@@ -194,6 +194,12 @@ const seedOrders = async (prchsrId) => {
       orderPostedDate: faker.date.between(),
       status: statusesOrder.ordered,
       taxAmount: 125,
+      track_trace: {
+        create: {
+          trackcode: shortid.generate(),
+          verification: shortid.generate(),
+        },
+      },
       delivery_address: {
         create: {
           dsId: 5,
@@ -220,6 +226,7 @@ const seedOrders = async (prchsrId) => {
 //helpers
 const cleanUpDb = async () => {
   await prisma[tables.delivery_address].deleteMany()
+  await prisma[tables.trackandtrace].deleteMany()
   await prisma[tables.order_item].deleteMany()
   await prisma[tables.box_order].deleteMany()
   await prisma[tables.box].deleteMany()
