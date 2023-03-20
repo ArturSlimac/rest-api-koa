@@ -5,8 +5,8 @@ const purchaserRepository = require("../1_repository/purchaser")
 const cartRepository = require("./cart")
 
 const getAll = async (testPurchaser, skip, take) => {
-  const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
   try {
+    const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
     const orders = await getPrisma()[tables.order].findMany({
       skip,
       take,
@@ -15,7 +15,6 @@ const getAll = async (testPurchaser, skip, take) => {
         status: { not: statusesOrder.delivered },
       },
       select: {
-        _count: true,
         id: true,
         orderPostedDate: true,
         status: true,
@@ -44,7 +43,11 @@ const getById = async (testPurchaser, id) => {
         id: true,
         orderPostedDate: true,
         status: true,
-        track_trace: true,
+        track_trace: {
+          select: {
+            trackcode: true,
+          },
+        },
         order_items: {
           select: {
             quantity: true,

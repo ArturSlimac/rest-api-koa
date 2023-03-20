@@ -211,4 +211,5 @@ model TrackTrace {
   typeOfVerif  String?
   ordrId       Int
   order        Order   @relation(fields: [ordrId], references: [id])
+  @@unique([trackcode,verification])
 }

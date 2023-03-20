@@ -59,6 +59,7 @@ const tables = Object.freeze({
   notification: "notification",
   imageLink: "imageLink",
   product_images: "product_images",
+  trackandtrace: "TrackTrace",
 })
 
 const statusesOrder = Object.freeze({
@@ -69,17 +70,10 @@ const statusesOrder = Object.freeze({
   delivered: "delivered",
 })
 
-const statusesNotification = Object.freeze({
-  read: "read",
-  unread: "unread",
-  new: "new",
-})
-
 module.exports = {
   initializeDatabase,
   getPrisma,
   tables,
   shutdownData,
   statusesOrder,
-  statusesNotification,
 }

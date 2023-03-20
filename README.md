@@ -32,7 +32,7 @@ DATABASE_CLIENT = client
 - Run the following command to create your SQL database file
 
 ```
-yarn prisma migrate dev 
+yarn prisma migrate dev
 ```
 
 - Run seeds. The seed file in prisma/seed.js will be executed and your database will be populated with the sample data. THIS WILL DELETE ALL DATA FROM THE DB BEFORE SEEDING
@@ -89,25 +89,31 @@ You can access the REST API of the server using the following endpoints:
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 
 #### Boxes
+
 - /api/boxes/ : returns all avaliable boxes
 
 - /api/boxes/`:id` : returns one box with the given `id`
 
 #### Cart
+
 - /api/me/cart : returns all products that user has in their cart and info about the cart
 
 #### Orders
-- /api/me/orders/?take={`take`}&skip={`skip`} : returns ALL orders of the entire company, not just purchaser's own purchases
+
+- /api/me/orders/?take={`take`}&skip={`skip`} : returns ALL orders that are not delivered yet of the entire company, not just purchaser's own purchases
   - Query Parameters
     - `take` (optional, default=20): This specifies how many objects should be returned in the list
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
 - /api/me/orders/`:id` : returns one order with the `id`
 
 #### Profile
+
 - /api/me/profile : shows an overview of all company data as well as all data of all purchasers associated with that company
 
 ### PUT
+
 #### Cart
+
 - /api/me/cart : merge articles provided in body with articles in the cart in the db
 
   - Body:
@@ -127,6 +133,7 @@ You can access the REST API of the server using the following endpoints:
       ```
 
 #### Orders
+
 - /api/me/orders/`:id` : update the existing whith given `id`
 
   - Body:
@@ -156,7 +163,9 @@ You can access the REST API of the server using the following endpoints:
   ```
 
 ### POST
+
 #### Orders
+
 - /api/me/orders/ : create an order in the db
   - Body:
     - `date`: String (required)
@@ -190,7 +199,9 @@ You can access the REST API of the server using the following endpoints:
               ],
       }
     ```
-#### Cart    
+
+#### Cart
+
 - /api/me/cart : overwrite items saved in db with provided items in body
 
   - Body:
@@ -208,6 +219,13 @@ You can access the REST API of the server using the following endpoints:
         ]
 
       ```
+
+#### Track-and-Trace
+
+- /api/track-and-trace : returns `status` of the order
+  - Body:
+    - `tt`: String (required): track-and-trace code
+    - `v`: verification code
 
 # Testing
 
