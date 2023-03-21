@@ -126,8 +126,8 @@ You can access the REST API of the server using the following endpoints:
 
       ```
         [
-          { id: 1, quantity: 1 },
-          { id: 2, quantity: 2 },
+          { prdctId: 1, quantity: 1 },
+          { prdctId: 2, quantity: 2 },
         ]
 
       ```
@@ -214,8 +214,8 @@ You can access the REST API of the server using the following endpoints:
 
       ```
         [
-          { id: 1, quantity: 1 },
-          { id: 2, quantity: 2 },
+          { prdctId: 1, quantity: 1 },
+          { prdctId: 2, quantity: 2 },
         ]
 
       ```
