@@ -177,6 +177,7 @@ model Delivery_address {
   streetNr String
   zip      String
   country  String
+  city     String
 }
 
 model Box {

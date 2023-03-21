@@ -12,6 +12,15 @@ getAllOrders.validationScheme = {
   query: {
     take: Joi.number().integer().min(0).optional(),
     skip: Joi.number().integer().min(0).optional(),
+    sort_by: Joi.string().valid("id", "date", "status", "purchaser").optional(),
+    order_by: Joi.string().valid("asc", "desc").optional(),
+    filter: Joi.optional(),
+    // filter: Joi.object({
+    //   id: Joi.number().integer().min(0).optional(),
+    //   status: Joi.string().allow("").optional(),
+    //   purchaser: Joi.string().allow("").optional(),
+    //   date: Joi.date().optional(),
+    // }).optional(),
   },
 }
 
@@ -50,6 +59,7 @@ createOrder.validationScheme = {
       streetNr: Joi.string(),
       zip: Joi.string(),
       country: Joi.string(),
+      city: Joi.string(),
     }),
     boxes: Joi.array().items(
       Joi.object({
@@ -94,7 +104,9 @@ module.exports = (app) => {
     prefix: "/me/orders",
   })
 
+  // router.get("/", getAllOrders)
   router.get("/", validate(getAllOrders.validationScheme), getAllOrders)
+
   router.get("/:id", validate(getOrderById.validationScheme), getOrderById)
   router.post("/", validate(createOrder.validationScheme), createOrder)
   router.put(

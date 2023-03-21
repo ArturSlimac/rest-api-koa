@@ -207,6 +207,7 @@ const seedOrders = async (prchsrId) => {
           streetNr: faker.phone.number("##"),
           zip: faker.address.zipCode(),
           country: faker.address.country(),
+          city: faker.address.city(),
         },
       },
       order_items: {

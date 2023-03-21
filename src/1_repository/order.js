@@ -3,17 +3,44 @@ const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 const purchaserRepository = require("../1_repository/purchaser")
 const cartRepository = require("./cart")
+const lodash = require("lodash")
 
-const getAll = async (testPurchaser, skip, take) => {
+const getAll = async (
+  testPurchaser,
+  skip,
+  take,
+  sort_by,
+  order_by,
+  id,
+  status,
+  purchaser,
+  date
+) => {
+  const arrayOfStatuses = Object.values(statusesOrder)
+  const statusesWithoutDelivered = lodash.pull(
+    arrayOfStatuses,
+    statusesOrder.delivered
+  )
+
+  date = date && new Date(date)
+  status = status ? [status] : statusesWithoutDelivered
+
   try {
     const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
     const orders = await getPrisma()[tables.order].findMany({
       skip,
       take,
+
       where: {
-        cmpnId,
-        status: { not: statusesOrder.delivered },
+        AND: [
+          { cmpnId },
+          { status: { in: status } },
+          { purchaser: { is: { id: purchaser } } },
+          { orderPostedDate: date },
+          { id },
+        ],
       },
+
       select: {
         id: true,
         orderPostedDate: true,
@@ -23,9 +50,22 @@ const getAll = async (testPurchaser, skip, take) => {
       orderBy: { orderPostedDate: "desc" },
     })
 
-    const totalAmountofOrders = await getPrisma()[tables.order].count()
-    const count = orders?.length || 0
-    return { totalAmountofOrders, count, orders }
+    const sortedOrders = sortOrders(orders, sort_by, order_by || "asc")
+
+    const totalAmountofOrders = await getPrisma()[tables.order].count({
+      where: {
+        AND: [
+          { cmpnId },
+          { status: { in: status } },
+          { purchaser: { is: { id: purchaser } } },
+          { orderPostedDate: date },
+          { id },
+        ],
+      },
+    })
+    const count = sortedOrders?.length || 0
+
+    return { totalAmountofOrders, count, orders: sortedOrders }
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in fetching all orders", {
@@ -174,6 +214,35 @@ const getStatusById = async (id) =>
     where: { id },
     select: { status: true },
   })
+
+const sortOrders = (orders, sort_by, order_by) => {
+  const customOrderForStatuses = Object.values(statusesOrder)
+  console.log(sort_by)
+  switch (sort_by) {
+    case "id":
+    case "date":
+      sort_by = sort_by === "date" && "orderPostedDate"
+      return lodash.orderBy(orders, [sort_by], [order_by])
+    case "status":
+      return lodash.orderBy(
+        orders,
+        (order) => lodash.indexOf(customOrderForStatuses, order.status),
+        order_by
+      )
+    case "purchaser":
+      return lodash.orderBy(
+        orders,
+        ["purchaser.lastName", "purchaser.firstName"],
+        order_by
+      )
+    default:
+      return orders
+  }
+}
+
+const sortByPurchaser = (orders, order_by) => {
+  return
+}
 
 module.exports = {
   getAll,

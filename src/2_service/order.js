@@ -15,13 +15,28 @@ const getAll = async (testPurchaser, query) => {
   const skip = Number(query.skip) || DEFAULT_SKIP
   const take = Number(query.take) || DEFAULT_TAKE
 
+  const filter = query.filter && JSON.parse(query.filter)
+  const id = filter?.id || undefined
+  const status = filter?.status || undefined
+  const purchaser = filter?.purchaser || undefined
+  const date = filter?.date || undefined
+
+  const { sort_by } = query || undefined
+  const { order_by } = query || undefined
+
   debugLog(
-    `Fetching all orders for user ${testPurchaser}, skip ${skip}, take ${take}`
+    `Fetching all orders for user ${testPurchaser}, skip ${skip}, take ${take}, , sort_by ${sort_by}, order_by ${order_by}, id ${id}, status ${status}, purchaser ${purchaser}, date ${date}`
   )
   const { totalAmountofOrders, count, orders } = await orderRepository.getAll(
     testPurchaser,
     skip,
-    take
+    take,
+    sort_by,
+    order_by,
+    id,
+    status,
+    purchaser,
+    date
   )
 
   return { totalAmountofOrders, skip, take, count, orders }
