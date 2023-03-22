@@ -138,8 +138,9 @@ const getById = async (testPurchaser, id) => {
         },
       },
     })
+    const { ...formattedOrder } = imgLinksFormatter([order])
 
-    return imgLinksFormatter([order])
+    return formattedOrder["0"]
   } catch (error) {
     const logger = getLogger()
     logger.error(`Error in getting order with id ${id}`, {
