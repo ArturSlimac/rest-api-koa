@@ -10,7 +10,7 @@ const getAll = async (
   skip,
   take,
   sort_by,
-  order_by,
+  order_by = "asc",
   id,
   status,
   purchaser,
@@ -24,7 +24,7 @@ const getAll = async (
   )
   status = status ? [status] : statusesWithoutDelivered
 
-  providedDate = (date && new Date(date)) || undefined
+  providedDate = date && new Date(date)
   nextDay =
     providedDate &&
     new Date(new Date(providedDate).setDate(providedDate.getDate() + 1))
@@ -59,7 +59,7 @@ const getAll = async (
       orderBy: { orderPostedDate: "desc" },
     })
 
-    const sortedOrders = sortOrders(orders, sort_by, order_by || "asc")
+    const sortedOrders = sortOrders(orders, sort_by, order_by)
 
     const totalAmountofOrders = await getPrisma()[tables.order].count({
       where: {
