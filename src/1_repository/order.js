@@ -111,6 +111,9 @@ const getById = async (testPurchaser, id) => {
                 description: {
                   select: { name: true },
                 },
+                product_images: {
+                  select: { image: { select: { link: true } } },
+                },
               },
             },
           },
@@ -136,7 +139,7 @@ const getById = async (testPurchaser, id) => {
       },
     })
 
-    return order
+    return imgLinksFormatter([order])
   } catch (error) {
     const logger = getLogger()
     logger.error(`Error in getting order with id ${id}`, {
@@ -234,7 +237,7 @@ const sortOrders = (orders, sort_by, order_by) => {
   switch (sort_by) {
     case "id":
     case "date":
-      sort_by = sort_by === "date" && "orderPostedDate"
+      sort_by = sort_by === "date" ? "orderPostedDate" : "id"
       return lodash.orderBy(orders, [sort_by], [order_by])
     case "status":
       return lodash.orderBy(
@@ -251,6 +254,28 @@ const sortOrders = (orders, sort_by, order_by) => {
     default:
       return orders
   }
+}
+const imgLinksFormatter = (orders) => {
+  return orders.map((order) => {
+    const updatedOrderItems = order.order_items.map((orderItem) => {
+      const productImageLinks = orderItem.product.product_images.map(
+        (productImage) => {
+          return productImage.image.link
+        }
+      )
+      return {
+        ...orderItem,
+        product: {
+          ...orderItem.product,
+          product_images: productImageLinks,
+        },
+      }
+    })
+    return {
+      ...order,
+      order_items: updatedOrderItems,
+    }
+  })
 }
 
 module.exports = {
