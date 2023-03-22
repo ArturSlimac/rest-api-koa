@@ -100,10 +100,22 @@ You can access the REST API of the server using the following endpoints:
 
 #### Orders
 
-- /api/me/orders/?take={`take`}&skip={`skip`} : returns ALL orders that are not delivered yet of the entire company, not just purchaser's own purchases
+- /api/me/orders/filter={`"id"`:`id`, `"date"`:`"date"`, `"status"`:`status`, `"purchaser"`:`purchaser`}&`sort_by`=`sort`&`order_by`=`desc`&`take`=`take`&`skip`=`skip` : returns ALL orders that are not delivered yet of the entire company, not just purchaser's own purchases
+
   - Query Parameters
+
     - `take` (optional, default=20): This specifies how many objects should be returned in the list
     - `skip` (optional): This specifies how many of the returned objects in the list should be skipped
+    - `filter` (optional): an object containing options for filtering
+
+      - `id` : Int (Optional): `id` of the order
+      - `status` : String (optinal): status for which all orders should be shown
+      - `date` : String (optional): date when some orders were made
+      - `purchaser` : Int (optional): `id` if the purchaser all orders of who should be shown
+
+    - `sort_by` : String (optional): provides sorting by `id`, `date`, `status` or `purchaser`
+    - `order_by` : String (optional): provides sorting `asc` (default) or `desc`
+
 - /api/me/orders/`:id` : returns one order with the `id`
 
 #### Profile

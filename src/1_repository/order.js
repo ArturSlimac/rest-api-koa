@@ -17,13 +17,17 @@ const getAll = async (
   date
 ) => {
   const arrayOfStatuses = Object.values(statusesOrder)
+  //by deafault all orders except "delivered" should be shown
   const statusesWithoutDelivered = lodash.pull(
     arrayOfStatuses,
     statusesOrder.delivered
   )
-
-  date = date && new Date(date)
   status = status ? [status] : statusesWithoutDelivered
+
+  providedDate = (date && new Date(date)) || undefined
+  nextDay =
+    providedDate &&
+    new Date(new Date(providedDate).setDate(providedDate.getDate() + 1))
 
   try {
     const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
@@ -36,7 +40,12 @@ const getAll = async (
           { cmpnId },
           { status: { in: status } },
           { purchaser: { is: { id: purchaser } } },
-          { orderPostedDate: date },
+          {
+            orderPostedDate: {
+              lt: nextDay,
+              gte: providedDate,
+            },
+          },
           { id },
         ],
       },
@@ -58,7 +67,12 @@ const getAll = async (
           { cmpnId },
           { status: { in: status } },
           { purchaser: { is: { id: purchaser } } },
-          { orderPostedDate: date },
+          {
+            orderPostedDate: {
+              lt: nextDay,
+              gte: providedDate,
+            },
+          },
           { id },
         ],
       },
@@ -217,7 +231,6 @@ const getStatusById = async (id) =>
 
 const sortOrders = (orders, sort_by, order_by) => {
   const customOrderForStatuses = Object.values(statusesOrder)
-  console.log(sort_by)
   switch (sort_by) {
     case "id":
     case "date":
@@ -238,10 +251,6 @@ const sortOrders = (orders, sort_by, order_by) => {
     default:
       return orders
   }
-}
-
-const sortByPurchaser = (orders, order_by) => {
-  return
 }
 
 module.exports = {
