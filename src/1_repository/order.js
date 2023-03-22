@@ -13,7 +13,7 @@ const getAll = async (
   order_by = "asc",
   id,
   status,
-  purchaser,
+  purchaser = "",
   date
 ) => {
   const arrayOfStatuses = Object.values(statusesOrder)
@@ -39,7 +39,14 @@ const getAll = async (
         AND: [
           { cmpnId },
           { status: { in: status } },
-          { purchaser: { is: { id: purchaser } } },
+          {
+            purchaser: {
+              OR: [
+                { firstName: { contains: purchaser } },
+                { lastName: { contains: purchaser } },
+              ],
+            },
+          },
           {
             orderPostedDate: {
               lt: nextDay,
@@ -66,7 +73,14 @@ const getAll = async (
         AND: [
           { cmpnId },
           { status: { in: status } },
-          { purchaser: { is: { id: purchaser } } },
+          {
+            purchaser: {
+              OR: [
+                { firstName: { contains: purchaser } },
+                { lastName: { contains: purchaser } },
+              ],
+            },
+          },
           {
             orderPostedDate: {
               lt: nextDay,
