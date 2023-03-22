@@ -1,5 +1,6 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
+const lodash = require("lodash")
 
 const getAll = async (
   skip,
@@ -17,18 +18,22 @@ const getAll = async (
     const products = await getPrisma()[tables.product].findMany({
       skip,
       take,
-      where: { ctgrId: categoryId },
       where: {
-        price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
-      },
-      where: {
-        description: {
-          some: {
-            name: {
-              contains: nameLike,
+        AND: [
+          { ctgrId: categoryId },
+          {
+            price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
+          },
+          {
+            description: {
+              some: {
+                name: {
+                  contains: nameLike,
+                },
+              },
             },
           },
-        },
+        ],
       },
       select: {
         id: true,
@@ -37,7 +42,6 @@ const getAll = async (
         ctgrId: true,
         unitOfMeasureId: true,
         price: {
-          where: { currencyId: "EUR" },
           select: { price: true, currencyId: true, unitOfMeasureId: true },
         },
         description: {
@@ -53,18 +57,22 @@ const getAll = async (
       },
     })
     const totalAmountofProducts = await getPrisma()[tables.product].count({
-      where: { ctgrId: categoryId },
       where: {
-        price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
-      },
-      where: {
-        description: {
-          some: {
-            name: {
-              contains: nameLike,
+        AND: [
+          { ctgrId: categoryId },
+          {
+            price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
+          },
+          {
+            description: {
+              some: {
+                name: {
+                  contains: nameLike,
+                },
+              },
             },
           },
-        },
+        ],
       },
     })
 
