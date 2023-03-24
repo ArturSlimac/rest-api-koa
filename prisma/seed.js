@@ -107,6 +107,7 @@ const seedCompany = async () => {
     data: {
       companyId,
       logoLink: faker.internet.avatar(),
+      name: faker.company.name(),
       phoneNr: faker.phone.number("+32 ### ## ## ##"),
       street: faker.address.street(),
       streetNr: faker.phone.number("##"),
@@ -127,10 +128,12 @@ const seedPurchaser = async (cmpnId) => {
   const { id } = await prisma[tables.purchaser].create({
     data: {
       cmpnId,
+      auth0Id: shortid.generate(),
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       phoneNumber: faker.phone.number("+32 ### ## ## ##"),
       purchaserId,
+      email: faker.internet.email(),
     },
     select: { id: true },
   })

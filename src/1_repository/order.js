@@ -63,6 +63,15 @@ const getById = async (testPurchaser, id) => {
             trackcode: true,
           },
         },
+        purchaser: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            company: { select: { id: true, name: true } },
+          },
+        },
         order_items: {
           select: {
             quantity: true,

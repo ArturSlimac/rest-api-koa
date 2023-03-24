@@ -86,9 +86,9 @@ model Product_unit_of_measure_conversion {
 }
 
 model Company {
-  id     Int  @id @default(autoincrement())
-  syncId Int?
-
+  id         Int         @id @default(autoincrement())
+  syncId     Int?
+  name       String      @default("company")
   companyId  String      @unique
   logoLink   String?
   phoneNr    String?
@@ -98,7 +98,7 @@ model Company {
   city       String?
   zipCode    String?
   purchasers Purchaser[]
-  orders     Order[]
+  
 }
 
 model Purchaser {
@@ -111,6 +111,7 @@ model Purchaser {
   firstName   String  @default("anon")
   lastName    String  @default("anon")
   phoneNumber String  @default("a number")
+  email       String  @default("mail@mail.co")
   cart        Cart[]
   orders      Order[]
 }
@@ -156,8 +157,6 @@ model Order {
   order_items      Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
-  company          Company?           @relation(fields: [companyId], references: [id])
-  companyId        Int?
   track_trace      TrackTrace[]
 }
 

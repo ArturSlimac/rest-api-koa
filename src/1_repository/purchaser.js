@@ -11,6 +11,7 @@ const getProfile = async (testPurchaser) => {
         phoneNumber: true,
         company: {
           select: {
+            name: true,
             logoLink: true,
             phoneNr: true,
             street: true,

@@ -85,6 +85,7 @@ CREATE TABLE `Product_unit_of_measure_conversion` (
 CREATE TABLE `Company` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
+    `name` VARCHAR(191) NOT NULL DEFAULT 'company',
     `companyId` VARCHAR(191) NOT NULL,
     `logoLink` VARCHAR(191) NULL,
     `phoneNr` VARCHAR(191) NULL,
@@ -108,6 +109,7 @@ CREATE TABLE `Purchaser` (
     `firstName` VARCHAR(191) NOT NULL DEFAULT 'anon',
     `lastName` VARCHAR(191) NOT NULL DEFAULT 'anon',
     `phoneNumber` VARCHAR(191) NOT NULL DEFAULT 'a number',
+    `email` VARCHAR(191) NOT NULL DEFAULT 'mail@mail.co',
 
     UNIQUE INDEX `Purchaser_purchaserId_key`(`purchaserId`),
     PRIMARY KEY (`id`)
