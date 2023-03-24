@@ -1,40 +1,20 @@
 const { getPrisma, tables } = require("../0_data/index")
 const { getLogger } = require("../core/logger")
-const lodash = require("lodash")
+const _ = require("lodash")
 
 const getAll = async (
   skip,
   take,
   categoryId,
   priceRange,
-  nameLike,
+  nameLike = "",
   sort_by,
-  order_by
+  order_by = "asc"
 ) => {
-  const gte = priceRange && priceRange[0] // price greater than or equal
-  const lte = priceRange && priceRange[1] // price is less than or equal
-
+  const where = getWhere(categoryId, priceRange, nameLike)
   try {
     const products = await getPrisma()[tables.product].findMany({
-      skip,
-      take,
-      where: {
-        AND: [
-          { ctgrId: categoryId },
-          {
-            price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
-          },
-          {
-            description: {
-              some: {
-                name: {
-                  contains: nameLike,
-                },
-              },
-            },
-          },
-        ],
-      },
+      where,
       select: {
         id: true,
         unitsInStock: true,
@@ -56,29 +36,16 @@ const getAll = async (
         },
       },
     })
+
     const totalAmountofProducts = await getPrisma()[tables.product].count({
-      where: {
-        AND: [
-          { ctgrId: categoryId },
-          {
-            price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
-          },
-          {
-            description: {
-              some: {
-                name: {
-                  contains: nameLike,
-                },
-              },
-            },
-          },
-        ],
-      },
+      where,
     })
 
-    const sortedProducts = sortProducts(products, sort_by, order_by || "asc")
+    const sortedProducts = sortProducts(products, sort_by, order_by)
 
-    const formattedProducts = imgLinksFormatter(sortedProducts)
+    const limitedProducts = sortedProducts?.slice(skip ? skip : 0, skip + take)
+
+    const formattedProducts = imgLinksFormatter(limitedProducts)
 
     const count = formattedProducts?.length || 0
 
@@ -158,7 +125,7 @@ const updateQuantity = async (id, quantity) => {
 
 //helpers
 const imgLinksFormatter = (products) => {
-  return products.map((product) => ({
+  return products?.map((product) => ({
     ...product,
     product_images: product.product_images.map((image) => image.image.link),
   }))
@@ -182,18 +149,37 @@ const sortByCategoryId = (products, order_by) => {
 }
 
 const sortByPrice = (products, order_by) => {
-  products.sort((a, b) => {
-    const priceA = a.price[0].price
-    const priceB = b.price[0].price
-    if (priceA < priceB) {
-      return order_by === "asc" ? -1 : 1
+  return products.sort((prodA, prodB) => {
+    const priceA = prodA.price[0]?.price ?? 0
+    const priceB = prodB.price[0]?.price ?? 0
+    if (order_by === "desc") {
+      return priceB - priceA
+    } else {
+      return priceA - priceB
     }
-    if (priceA > priceB) {
-      return order_by === "asc" ? 1 : -1
-    }
-    return 0
   })
-  return products
+}
+
+const getWhere = (categoryId, priceRange, nameLike) => {
+  const gte = priceRange && priceRange[0] // price greater than or equal
+  const lte = priceRange && priceRange[1] // price is less than or equal
+  return {
+    AND: [
+      { ctgrId: categoryId },
+      {
+        price: { some: { AND: [{ price: { gte } }, { price: { lte } }] } },
+      },
+      {
+        description: {
+          some: {
+            name: {
+              contains: nameLike,
+            },
+          },
+        },
+      },
+    ],
+  }
 }
 
 module.exports = {

@@ -71,7 +71,7 @@ model Product_price {
   unitOfMeasureId String?
   quantity        Int?
 
-  @@unique([prdctId, currencyId, price])
+  @@unique([prdctId, currencyId])
 }
 
 model Product_unit_of_measure_conversion {

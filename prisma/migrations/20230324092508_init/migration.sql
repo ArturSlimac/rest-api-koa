@@ -64,7 +64,7 @@ CREATE TABLE `Product_price` (
     `unitOfMeasureId` VARCHAR(191) NULL,
     `quantity` INTEGER NULL,
 
-    UNIQUE INDEX `Product_price_prdctId_currencyId_price_key`(`prdctId`, `currencyId`, `price`),
+    UNIQUE INDEX `Product_price_prdctId_currencyId_key`(`prdctId`, `currencyId`),
     PRIMARY KEY (`ppId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -144,7 +144,7 @@ CREATE TABLE `Order` (
     `orderPostedDate` DATETIME(3) NOT NULL,
     `taxAmount` DOUBLE NOT NULL,
     `currencyId` VARCHAR(191) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('delivered', 'out_for_delivery', 'shipped', 'processed', 'ordered') NOT NULL,
     `companyId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -174,6 +174,7 @@ CREATE TABLE `Delivery_address` (
     `streetNr` VARCHAR(191) NOT NULL,
     `zip` VARCHAR(191) NOT NULL,
     `country` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Delivery_address_ordrId_key`(`ordrId`),
     PRIMARY KEY (`id`)
@@ -211,11 +212,12 @@ CREATE TABLE `Box_order` (
 CREATE TABLE `TrackTrace` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
-    `ordrId` INTEGER NOT NULL,
     `trackcode` VARCHAR(191) NULL,
     `verification` VARCHAR(191) NULL,
     `typeOfVerif` VARCHAR(191) NULL,
+    `ordrId` INTEGER NOT NULL,
 
+    UNIQUE INDEX `TrackTrace_trackcode_verification_key`(`trackcode`, `verification`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
