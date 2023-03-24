@@ -10,90 +10,37 @@ const getAll = async (
   skip,
   take,
   sort_by,
-  order_by = "asc",
+  order_by,
   id,
   status,
   purchaser = "",
   date
 ) => {
-  const arrayOfStatuses = Object.values(statusesOrder)
-  //by deafault all orders except "delivered" should be shown
-  const statusesWithoutDelivered = lodash.pull(
-    arrayOfStatuses,
-    statusesOrder.delivered
-  )
-  status = status ? [status] : statusesWithoutDelivered
-
-  providedDate = date && new Date(date)
-  nextDay =
-    providedDate &&
-    new Date(new Date(providedDate).setDate(providedDate.getDate() + 1))
+  status = getStatusesArray(status)
+  const orderBy = getOrderByObject(sort_by, order_by)
 
   try {
     const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
+    const where = getWhere(cmpnId, id, status, purchaser, date)
     const orders = await getPrisma()[tables.order].findMany({
       skip,
       take,
-
-      where: {
-        AND: [
-          { cmpnId },
-          { status: { in: status } },
-          {
-            purchaser: {
-              OR: [
-                { firstName: { contains: purchaser } },
-                { lastName: { contains: purchaser } },
-              ],
-            },
-          },
-          {
-            orderPostedDate: {
-              lt: nextDay,
-              gte: providedDate,
-            },
-          },
-          { id },
-        ],
-      },
-
+      where,
       select: {
         id: true,
         orderPostedDate: true,
         status: true,
         purchaser: { select: { firstName: true, lastName: true } },
       },
-      orderBy: { orderPostedDate: "desc" },
+      orderBy,
     })
-
-    const sortedOrders = sortOrders(orders, sort_by, order_by)
 
     const totalAmountofOrders = await getPrisma()[tables.order].count({
-      where: {
-        AND: [
-          { cmpnId },
-          { status: { in: status } },
-          {
-            purchaser: {
-              OR: [
-                { firstName: { contains: purchaser } },
-                { lastName: { contains: purchaser } },
-              ],
-            },
-          },
-          {
-            orderPostedDate: {
-              lt: nextDay,
-              gte: providedDate,
-            },
-          },
-          { id },
-        ],
-      },
+      where,
     })
-    const count = sortedOrders?.length || 0
+    const count = orders?.length || 0
 
-    return { totalAmountofOrders, count, orders: sortedOrders }
+    return { totalAmountofOrders, count, orders }
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in fetching all orders", {
@@ -247,29 +194,6 @@ const getStatusById = async (id) =>
     select: { status: true },
   })
 
-const sortOrders = (orders, sort_by, order_by) => {
-  const customOrderForStatuses = Object.values(statusesOrder)
-  switch (sort_by) {
-    case "id":
-    case "date":
-      sort_by = sort_by === "date" ? "orderPostedDate" : "id"
-      return lodash.orderBy(orders, [sort_by], [order_by])
-    case "status":
-      return lodash.orderBy(
-        orders,
-        (order) => lodash.indexOf(customOrderForStatuses, order.status),
-        order_by
-      )
-    case "purchaser":
-      return lodash.orderBy(
-        orders,
-        ["purchaser.lastName", "purchaser.firstName"],
-        order_by
-      )
-    default:
-      return orders
-  }
-}
 const imgLinksFormatter = (orders) => {
   return orders.map((order) => {
     const updatedOrderItems = order.order_items.map((orderItem) => {
@@ -291,6 +215,63 @@ const imgLinksFormatter = (orders) => {
       order_items: updatedOrderItems,
     }
   })
+}
+
+const getStatusesArray = (status) => {
+  const arrayOfStatuses = Object.values(statusesOrder)
+  //by deafault all orders except "delivered" should be shown
+  const statusesWithoutDelivered = lodash.pull(
+    arrayOfStatuses,
+    statusesOrder.delivered
+  )
+  return status ? [status] : statusesWithoutDelivered
+}
+
+const getOrderByObject = (sort_by, order_by = "desc") => {
+  switch (sort_by) {
+    case "id":
+      return { id: order_by }
+    case "status":
+      return [{ status: order_by }, { orderPostedDate: "desc" }]
+    case "date":
+      return { orderPostedDate: order_by }
+    case "purchaser":
+      return [
+        { purchaser: { lastName: order_by } },
+        { purchaser: { firstName: order_by } },
+      ]
+
+    default:
+      return { orderPostedDate: "desc" }
+  }
+}
+
+const getWhere = (cmpnId, id, status, purchaser, date) => {
+  providedDate = date && new Date(date)
+  nextDay =
+    providedDate &&
+    new Date(new Date(providedDate).setDate(providedDate.getDate() + 1))
+  return {
+    AND: [
+      { cmpnId },
+      { status: { in: status } },
+      {
+        purchaser: {
+          OR: [
+            { firstName: { contains: purchaser } },
+            { lastName: { contains: purchaser } },
+          ],
+        },
+      },
+      {
+        orderPostedDate: {
+          lt: nextDay,
+          gte: providedDate,
+        },
+      },
+      { id },
+    ],
+  }
 }
 
 module.exports = {
