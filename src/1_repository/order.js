@@ -3,7 +3,7 @@ const { getLogger } = require("../core/logger")
 const productRepository = require("../1_repository/product")
 const purchaserRepository = require("../1_repository/purchaser")
 const cartRepository = require("./cart")
-const lodash = require("lodash")
+const _ = require("lodash")
 
 const getAll = async (
   testPurchaser,
@@ -17,7 +17,7 @@ const getAll = async (
   date
 ) => {
   status = getStatusesArray(status)
-  const orderBy = getOrderByObject(sort_by, order_by)
+  const orderBy = getOrderBy(sort_by, order_by)
 
   try {
     const cmpnId = await purchaserRepository.getCompanyId(testPurchaser)
@@ -220,14 +220,14 @@ const imgLinksFormatter = (orders) => {
 const getStatusesArray = (status) => {
   const arrayOfStatuses = Object.values(statusesOrder)
   //by deafault all orders except "delivered" should be shown
-  const statusesWithoutDelivered = lodash.pull(
+  const statusesWithoutDelivered = _.pull(
     arrayOfStatuses,
     statusesOrder.delivered
   )
   return status ? [status] : statusesWithoutDelivered
 }
 
-const getOrderByObject = (sort_by, order_by = "desc") => {
+const getOrderBy = (sort_by, order_by = "desc") => {
   switch (sort_by) {
     case "id":
       return { id: order_by }

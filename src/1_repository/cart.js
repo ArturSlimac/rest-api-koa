@@ -47,7 +47,6 @@ const postItemsInCart = async (testPurchaser, body) => {
 }
 
 const mergeLocalAndDdCarts = async (testPurchaser, body) => {
-  console.log(body)
   const crtId = await getCartIdByUserId(testPurchaser)
   try {
     body.forEach(async ({ prdctId, quantity }) => {
