@@ -46,6 +46,9 @@ const validate = (schema) => {
       if (queryErrors) {
         errors.query = cleanupJoiError(queryErrors)
       } else {
+        if (ctx.query.filter) {
+          queryValue.filter = JSON.stringify(ctx.query.filter)
+        }
         ctx.query = queryValue
       }
     }

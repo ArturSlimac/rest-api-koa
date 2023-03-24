@@ -12,15 +12,14 @@ getAllProducts.validationScheme = {
   query: {
     take: Joi.number().integer().min(0).optional(),
     skip: Joi.number().integer().min(0).optional(),
-    filter: Joi.optional(),
-    // filter: Joi.object({
-    //   category: Joi.number().integer().min(0).optional(),
-    //   price: Joi.array()
-    //     .length(2)
-    //     .items(Joi.number().integer().min(0).optional())
-    //     .optional(),
-    //   name: Joi.string().allow("").optional(),
-    // }).optional(),
+    filter: Joi.object({
+      category: Joi.number().integer().min(0).optional(),
+      price: Joi.array()
+        .length(2)
+        .items(Joi.number().integer().min(0).optional())
+        .optional(),
+      name: Joi.string().allow("").optional(),
+    }).optional(),
     sort_by: Joi.string().valid("category", "price", "name").optional(),
     order_by: Joi.string().valid("asc", "desc").optional(),
   },
@@ -40,8 +39,16 @@ module.exports = (app) => {
   const router = new Router({
     prefix: "/products",
   })
-  // router.get("/", getAllProducts)
-  router.get("/", validate(getAllProducts.validationScheme), getAllProducts)
+
+  router.get(
+    "/",
+    (ctx, next) => {
+      const parsedFilter = ctx.query.filter && JSON.parse(ctx.query.filter)
+      ctx.query.filter = parsedFilter
+      return validate(getAllProducts.validationScheme)(ctx, next)
+    },
+    getAllProducts
+  )
 
   router.get("/:id", validate(getProductById.validationScheme), getProductById)
 

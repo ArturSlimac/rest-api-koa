@@ -2,6 +2,7 @@ const Router = require("@koa/router")
 const ordersService = require("../2_service/order")
 const Joi = require("joi")
 const validate = require("./_validator")
+const { tables, statusesOrder } = require("../0_data")
 const testPurchaser = 1
 
 const getAllOrders = async (ctx) => {
@@ -14,13 +15,21 @@ getAllOrders.validationScheme = {
     skip: Joi.number().integer().min(0).optional(),
     sort_by: Joi.string().valid("id", "date", "status", "purchaser").optional(),
     order_by: Joi.string().valid("asc", "desc").optional(),
-    filter: Joi.optional(),
-    // filter: Joi.object({
-    //   id: Joi.number().integer().min(0).optional(),
-    //   status: Joi.string().allow("").optional(),
-    //   purchaser: Joi.string().allow("").optional(),
-    //   date: Joi.date().optional(),
-    // }).optional(),
+    filter: Joi.object({
+      id: Joi.number().integer().min(0).optional(),
+      status: Joi.string()
+        .allow("")
+        .valid(
+          statusesOrder.delivered,
+          statusesOrder.ordered,
+          statusesOrder.out_for_delivery,
+          statusesOrder.processed,
+          statusesOrder.shipped
+        )
+        .optional(),
+      purchaser: Joi.string().allow("").optional(),
+      date: Joi.date().optional(),
+    }).optional(),
   },
 }
 
@@ -104,8 +113,16 @@ module.exports = (app) => {
     prefix: "/me/orders",
   })
 
-  // router.get("/", getAllOrders)
-  router.get("/", validate(getAllOrders.validationScheme), getAllOrders)
+  router.get(
+    "/",
+    (ctx, next) => {
+      const parsedFilter = ctx.query.filter && JSON.parse(ctx.query.filter)
+      ctx.query.filter = parsedFilter
+
+      return validate(getAllOrders.validationScheme)(ctx, next)
+    },
+    getAllOrders
+  )
 
   router.get("/:id", validate(getOrderById.validationScheme), getOrderById)
   router.post("/", validate(createOrder.validationScheme), createOrder)
