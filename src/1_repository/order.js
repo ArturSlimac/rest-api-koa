@@ -131,7 +131,7 @@ const create = async (
       await productRepository.updateQuantity(prdctId, quantity)
     })
 
-    await getPrisma()[tables.order].create({
+    return await getPrisma()[tables.order].create({
       data: {
         currencyId,
         prchsrId: testPurchaser,
@@ -151,11 +151,8 @@ const create = async (
           createMany: { data: [...boxes] },
         },
       },
-      select: { id: true },
+      select: { id: true, status: true },
     })
-
-    //claen up cart
-    await cartRepository.postItemsInCart(testPurchaser, [])
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in placing order", {
@@ -166,27 +163,37 @@ const create = async (
 }
 
 const updateById = async ({ id, delivery_address, boxes }) => {
+  const select = { id: true, orderPostedDate: true, orderUpdatedDate: true }
   try {
-    delivery_address &&
+    let updatedOrder =
+      delivery_address &&
       (await getPrisma()[tables.order].update({
         where: { id },
         data: {
+          orderUpdatedDate: new Date(Date.now()),
           delivery_address: {
             update: { where: { ordrId: id }, data: { ...delivery_address } },
           },
         },
+        select,
       }))
 
-    boxes &&
+    updatedOrder =
+      boxes &&
       (await getPrisma()[tables.order].update({
         where: { id },
         data: {
+          orderUpdatedDate: new Date(Date.now()),
+
           box_order: {
             deleteMany: {},
             createMany: { data: [...boxes] },
           },
         },
+        select,
       }))
+
+    return updatedOrder
   } catch (error) {
     const logger = getLogger()
     logger.error("Error in updating order", {

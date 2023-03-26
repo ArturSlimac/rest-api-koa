@@ -150,11 +150,16 @@ You can access the REST API of the server using the following endpoints:
 
   - Body:
 
-    - `delivery_address`: Object {`street`: String (required),
-      `streetNr`: String (required),
-      `zip`: String (required),
-      `country`: String (required)}
-    - `boxes`: Array of ojects { `bxId`: Int (required), `quantity`: Int (required), `price`: Float (required)}
+    - `delivery_address`: Object {
+      - `street`: String (required),
+      - `streetNr`: String (required),
+      - `zip`: String (required),
+      - `country`: String (required),
+      - `city`: String (required)}
+    - `boxes`: Array of ojects {
+      - `bxId`: Int (required),
+      - `quantity`: Int (required),
+      - `price`: Float (required)}
     - either `delivery_address` or `boxes` is required
 
   - example:
@@ -166,6 +171,7 @@ You can access the REST API of the server using the following endpoints:
         streetNr: "55AA",
         zip: "7878HG",
         country: "somewhere",
+        city: "newCity"
     },
      boxes: [
         { bxId: 3, quantity: 2, price: 12 },
@@ -189,9 +195,10 @@ You can access the REST API of the server using the following endpoints:
       - `streetNr`: String (required),
       - `zip`: String (required),
       - `country`: String (required)
-      - `city`:String (required)
+      - `city`: String (required)
         }
     - `boxes`: Array of ojects { `bxId`: Int (required), `quantity`: Int (required), `price`: Float (required)}
+    - Returns: `id` and `status` of the new order
     - example:
     ```
     {

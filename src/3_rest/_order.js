@@ -48,6 +48,7 @@ const createOrder = async (ctx) => {
     ...ctx.request.body,
     date: new Date(ctx.request.body.date),
   })
+  console.log(newOrder)
   ctx.body = newOrder
   ctx.status = 201
 }
@@ -81,8 +82,13 @@ createOrder.validationScheme = {
 }
 
 const updateOrderById = async (ctx) => {
-  await ordersService.updateById(ctx.params, ctx.request.body)
-  ctx.status = 204
+  const updatedOrder = await ordersService.updateById(
+    ctx.params,
+    ctx.request.body
+  )
+
+  ctx.body = updatedOrder
+  ctx.status = 200
 }
 
 updateOrderById.validationScheme = {
@@ -95,6 +101,7 @@ updateOrderById.validationScheme = {
       streetNr: Joi.string(),
       zip: Joi.string(),
       country: Joi.string(),
+      city: Joi.string(),
     }).optional(),
     boxes: Joi.array()
       .items(

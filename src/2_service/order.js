@@ -74,6 +74,7 @@ const create = async (
     delivery_address,
     boxes,
   })
+  return ordrId
 }
 
 const updateById = async (params, { delivery_address, boxes }) => {
@@ -96,7 +97,13 @@ const updateById = async (params, { delivery_address, boxes }) => {
     boxes,
   })
 
-  await orderRepository.updateById({ id, delivery_address, boxes })
+  const updatedOrder = await orderRepository.updateById({
+    id,
+    delivery_address,
+    boxes,
+  })
+
+  return updatedOrder
 }
 
 module.exports = {

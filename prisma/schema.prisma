@@ -98,7 +98,6 @@ model Company {
   city       String?
   zipCode    String?
   purchasers Purchaser[]
-  
 }
 
 model Purchaser {
@@ -151,6 +150,7 @@ model Order {
   processedById    Int?
   orderReference   String?
   orderPostedDate  DateTime
+  orderUpdatedDate DateTime?
   taxAmount        Float
   currencyId       String
   status           OrderStatus
