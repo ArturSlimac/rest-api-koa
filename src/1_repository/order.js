@@ -102,7 +102,13 @@ const getById = async (testPurchaser, id) => {
             quantity: true,
             price: true,
             box: {
-              select: { type: true, id: true },
+              select: {
+                type: true,
+                id: true,
+                width: true,
+                height: true,
+                length: true,
+              },
             },
           },
         },
@@ -212,7 +218,7 @@ const getStatusById = async (id) =>
 
 const imgLinksFormatter = (orders) => {
   return orders.map((order) => {
-    const updatedOrderItems = order.order_items.map((orderItem) => {
+    const updatedOrderItems = order?.order_items?.map((orderItem) => {
       const productImageLinks = orderItem.product.product_images.map(
         (productImage) => {
           return productImage.image.link
