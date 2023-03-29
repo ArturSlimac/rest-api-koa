@@ -22,13 +22,13 @@ model Product {
   id                                 Int                                  @id @default(autoincrement())
   syncId                             Int?
   productId                          String                               @unique
-  unitOfMeasureId                    String
+  unitOfMeasureId                    String?
   productAvailability                String?
   unitsInStock                       Int?
-  ctgrId                             Int
+  ctgrId                             Int @default(1) //no categorie
   category                           Product_category                     @relation(fields: [ctgrId], references: [id])
   description                        Product_description[]
-  price                              Product_price[]
+  price                              Product_price[] 
   product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   cart_items                         Cart_items[]
   order_items                        Order_item[]
@@ -52,8 +52,8 @@ model Product_images {
 model Product_description {
   pdId       Int     @id @default(autoincrement())
   syncId     Int?
-  prdctId    Int
-  product    Product @relation(fields: [prdctId], references: [id])
+  prdctId    Int?
+  product    Product? @relation(fields: [prdctId], references: [id])
   languageId String
   name       String?
   lister     String? @db.Text
@@ -64,14 +64,12 @@ model Product_description {
 model Product_price {
   ppId            Int     @id @default(autoincrement())
   syncId          Int?
-  prdctId         Int
-  product         Product @relation(fields: [prdctId], references: [id])
+  prdctId         Int?
+  product         Product? @relation(fields: [prdctId], references: [id])
   currencyId      String?
   price           Float?
   unitOfMeasureId String?
   quantity        Int?
-
-  @@unique([prdctId, currencyId])
 }
 
 model Product_unit_of_measure_conversion {
@@ -145,15 +143,15 @@ enum OrderStatus {
 model Order {
   id               Int                @id @default(autoincrement())
   syncId           Int?
-  prchsrId         Int
-  purchaser        Purchaser          @relation(fields: [prchsrId], references: [id])
+  prchsrId         Int?
+  purchaser        Purchaser?          @relation(fields: [prchsrId], references: [id])
   processedById    Int?
   orderReference   String?
-  orderPostedDate  DateTime
+  orderPostedDate  DateTime @default(now())
   orderUpdatedDate DateTime?
   taxAmount        Float
   currencyId       String
-  status           OrderStatus
+  status           OrderStatus @default(ordered)
   order_items      Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
@@ -163,10 +161,10 @@ model Order {
 model Order_item {
   orderItemId     Int     @id @default(autoincrement())
   syncId          Int?
-  ordrId          Int
-  order           Order   @relation(fields: [ordrId], references: [id])
-  prdctId         Int
-  product         Product @relation(fields: [prdctId], references: [id])
+  ordrId          Int?
+  order           Order?   @relation(fields: [ordrId], references: [id])
+  prdctId         Int?
+  product         Product? @relation(fields: [prdctId], references: [id])
   quantity        Int
   unitOfMeasureId String?
   netPrice        Float?

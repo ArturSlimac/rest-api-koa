@@ -14,10 +14,10 @@ CREATE TABLE `Product` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
     `productId` VARCHAR(191) NOT NULL,
-    `unitOfMeasureId` VARCHAR(191) NOT NULL,
+    `unitOfMeasureId` VARCHAR(191) NULL,
     `productAvailability` VARCHAR(191) NULL,
     `unitsInStock` INTEGER NULL,
-    `ctgrId` INTEGER NOT NULL,
+    `ctgrId` INTEGER NOT NULL DEFAULT 1,
 
     UNIQUE INDEX `Product_productId_key`(`productId`),
     PRIMARY KEY (`id`)
@@ -44,7 +44,7 @@ CREATE TABLE `Product_images` (
 CREATE TABLE `Product_description` (
     `pdId` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
-    `prdctId` INTEGER NOT NULL,
+    `prdctId` INTEGER NULL,
     `languageId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
     `lister` TEXT NULL,
@@ -58,13 +58,12 @@ CREATE TABLE `Product_description` (
 CREATE TABLE `Product_price` (
     `ppId` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
-    `prdctId` INTEGER NOT NULL,
+    `prdctId` INTEGER NULL,
     `currencyId` VARCHAR(191) NULL,
     `price` DOUBLE NULL,
     `unitOfMeasureId` VARCHAR(191) NULL,
     `quantity` INTEGER NULL,
 
-    UNIQUE INDEX `Product_price_prdctId_currencyId_key`(`prdctId`, `currencyId`),
     PRIMARY KEY (`ppId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -140,14 +139,14 @@ CREATE TABLE `Cart_items` (
 CREATE TABLE `Order` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `syncId` INTEGER NULL,
-    `prchsrId` INTEGER NOT NULL,
+    `prchsrId` INTEGER NULL,
     `processedById` INTEGER NULL,
     `orderReference` VARCHAR(191) NULL,
-    `orderPostedDate` DATETIME(3) NOT NULL,
+    `orderPostedDate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `orderUpdatedDate` DATETIME(3) NULL,
     `taxAmount` DOUBLE NOT NULL,
     `currencyId` VARCHAR(191) NOT NULL,
-    `status` ENUM('delivered', 'out_for_delivery', 'shipped', 'processed', 'ordered') NOT NULL,
-    `companyId` INTEGER NULL,
+    `status` ENUM('delivered', 'out_for_delivery', 'shipped', 'processed', 'ordered') NOT NULL DEFAULT 'ordered',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -233,10 +232,10 @@ ALTER TABLE `Product_images` ADD CONSTRAINT `Product_images_prdctId_fkey` FOREIG
 ALTER TABLE `Product_images` ADD CONSTRAINT `Product_images_imgId_fkey` FOREIGN KEY (`imgId`) REFERENCES `ImageLink`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Product_description` ADD CONSTRAINT `Product_description_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Product_description` ADD CONSTRAINT `Product_description_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Product_price` ADD CONSTRAINT `Product_price_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Product_price` ADD CONSTRAINT `Product_price_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Product_unit_of_measure_conversion` ADD CONSTRAINT `Product_unit_of_measure_conversion_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -254,10 +253,7 @@ ALTER TABLE `Cart_items` ADD CONSTRAINT `Cart_items_crtId_fkey` FOREIGN KEY (`cr
 ALTER TABLE `Cart_items` ADD CONSTRAINT `Cart_items_prdctId_fkey` FOREIGN KEY (`prdctId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Order` ADD CONSTRAINT `Order_prchsrId_fkey` FOREIGN KEY (`prchsrId`) REFERENCES `Purchaser`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Order` ADD CONSTRAINT `Order_companyId_fkey` FOREIGN KEY (`companyId`) REFERENCES `Company`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Order` ADD CONSTRAINT `Order_prchsrId_fkey` FOREIGN KEY (`prchsrId`) REFERENCES `Purchaser`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Order_item` ADD CONSTRAINT `Order_item_ordrId_fkey` FOREIGN KEY (`ordrId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
