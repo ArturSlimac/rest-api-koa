@@ -25,6 +25,7 @@ describe("products", () => {
 
     it("should 200 and contain all necessary properties", () => {
       expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('totalAmountofProducts');
       expect(response.body).toHaveProperty("count")
       expect(response.body).toHaveProperty("products")
       expect(response.body).toHaveProperty("take")
@@ -38,9 +39,7 @@ describe("products", () => {
       expect(response.body.products[0]).toHaveProperty("price")
       expect(response.body.products[0].price[0]).toHaveProperty("price")
       expect(response.body.products[0].price[0]).toHaveProperty("currencyId")
-      expect(response.body.products[0].price[0]).toHaveProperty(
-        "unitOfMeasureId"
-      )
+      expect(response.body.products[0].price[0]).toHaveProperty("unitOfMeasureId")
       expect(response.body.products[0]).toHaveProperty("description")
       expect(response.body.products[0].description[0]).toHaveProperty("name")
     })
@@ -89,4 +88,86 @@ describe("products", () => {
       expect(response.body.description[0]).toHaveProperty("long")
     })
   })
+
+  describe('Filtering', () => {
+    describe('GET /api/products?filter={"category": 1}', () => {
+      it('should 200 and return a list of products with category 1', async () => {
+        const response = await request.get(`${url}?filter={"category": 1}`)
+        expect(response.status).toBe(200)
+        expect(response.body.count).toBeGreaterThanOrEqual(1);
+        response.body.products.forEach(el => expect(el.ctgrId).toBe(1));
+      })
+    })
+  
+    describe('GET /api/products?filter={"price": [0, 200]}', () => {
+      it('should 200 and return a list of products with a price between 0 and 200', async () => {
+        const response = await request.get(`${url}?filter={"price": [0, 200]}`)
+        expect(response.status).toBe(200)
+        expect(response.body.count).toBeGreaterThanOrEqual(1);
+        response.body.products.forEach(el => {
+          expect(el.price[0].price).toBeGreaterThanOrEqual(0);
+          expect(el.price[0].price).toBeLessThanOrEqual(200);
+        });
+      })
+    })
+  
+    describe('GET /api/products?filter={"name": "Incr"}', () => {
+      it('should 200 and return a list of products that start with "Incr"', async () => {
+        const response = await request.get(`${url}?filter={"name": "Incr"}`)
+        expect(response.status).toBe(200)
+        expect(response.body.count).toBeGreaterThanOrEqual(1);
+        response.body.products.forEach(el => {
+          expect(el.description[0].name).toMatch(new RegExp('^Incr?'));
+        });
+      })
+    })
+  
+    describe('GET /api/products?filter={"name": "Incr"}', () => {
+      it('should 200 and return a list of products that start with "Incr"', async () => {
+        const response = await request.get(`${url}?filter={"name": "Incr"}`)
+        expect(response.status).toBe(200)
+        expect(response.body.count).toBeGreaterThanOrEqual(1);
+        response.body.products.forEach(el => {
+          expect(el.description[0].name).toMatch(new RegExp('^Incr?'));
+        });
+      })
+    })
+  
+    describe('GET /api/products?filter={"category": 1, "price": [0, 200]}', () => {
+      it('should 200 and return a list of products with category 1 and a price between 0 and 200', async () => {
+        const response = await request.get(`${url}?filter={"category": 1, "price": [0, 200]}`)
+        expect(response.status).toBe(200)
+        expect(response.body.count).toBeGreaterThanOrEqual(1);
+        response.body.products.forEach(el => {
+          expect(el.ctgrId).toBe(1)
+          expect(el.price[0].price).toBeGreaterThanOrEqual(0);
+          expect(el.price[0].price).toBeLessThanOrEqual(200);
+        });
+      })
+    })
+  })
+
+  describe('Sorting', () => {
+    describe('GET /api/products?sort_by=price', () => {
+      it('should 200 and return a list of products sorted by price descending', async () => {
+        const response = await request.get(`${url}?sort_by=price`)
+        expect(response.status).toBe(200);
+        for(let i = 0; i < response.body.products.length; i++) {
+          if(i+1 >= response.body.products.length) continue;
+          const current = response.body.products[i], next = response.body.products[i+1];
+          expect(current.price[0].price).toBeLessThanOrEqual(next.price[0].price);
+        }
+      })
+    })
+
+    it('should 200 and return a list of products sorted by category descending', async () => {
+      const response = await request.get(`${url}?sort_by=category`)
+      expect(response.status).toBe(200);
+      for(let i = 0; i < response.body.products.length; i++) {
+        if(i+1 >= response.body.products.length) continue;
+        const current = response.body.products[i], next = response.body.products[i+1];
+        expect(current.ctgrId).toBeLessThanOrEqual(next.ctgrId);
+      }
+    })
+  });
 })
