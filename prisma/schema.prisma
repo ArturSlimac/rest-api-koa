@@ -110,7 +110,7 @@ model Purchaser {
   phoneNumber String  @default("a number")
   email       String  @default("mail@mail.co")
   cart        Cart[]
-  orders      Order[]
+  orders      Orders[]
 }
 
 model Cart {
@@ -140,7 +140,7 @@ enum OrderStatus {
   ordered
 }
 
-model Order {
+model Orders {
   id               Int                @id @default(autoincrement())
   syncId           Int?
   prchsrId         Int?
@@ -162,7 +162,7 @@ model Order_item {
   orderItemId     Int     @id @default(autoincrement())
   syncId          Int?
   ordrId          Int?
-  order           Order?   @relation(fields: [ordrId], references: [id])
+  order           Orders?   @relation(fields: [ordrId], references: [id])
   prdctId         Int?
   product         Product? @relation(fields: [prdctId], references: [id])
   quantity        Int
@@ -176,7 +176,7 @@ model Order_item {
 model Delivery_address {
   id       Int    @id @default(autoincrement())
   ordrId   Int    @unique
-  order    Order  @relation(fields: [ordrId], references: [id])
+  order    Orders  @relation(fields: [ordrId], references: [id])
   dsId     Int //delivery service Id
   street   String
   streetNr String
@@ -204,7 +204,7 @@ model Box_order {
   bxId     Int
   box      Box   @relation(fields: [bxId], references: [id])
   ordrId   Int
-  order    Order @relation(fields: [ordrId], references: [id])
+  order    Orders @relation(fields: [ordrId], references: [id])
   price    Float
   quantity Int
 }
@@ -216,7 +216,7 @@ model TrackTrace {
   verification String?
   typeOfVerif  String?
   ordrId       Int
-  order        Order   @relation(fields: [ordrId], references: [id])
+  order        Orders   @relation(fields: [ordrId], references: [id])
 
   @@unique([trackcode, verification])
 }

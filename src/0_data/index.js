@@ -51,7 +51,7 @@ const tables = Object.freeze({
   purchaser: "purchaser",
   cart: "cart",
   cart_items: "cart_items",
-  order: "order",
+  order: "orders",
   order_item: "order_item",
   delivery_address: "delivery_address",
   box: "box",
