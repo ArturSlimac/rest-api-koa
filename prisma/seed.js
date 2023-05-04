@@ -205,7 +205,6 @@ const seedOrders = async (prchsrId) => {
       },
       delivery_address: {
         create: {
-          dsId: 5,
           street: faker.address.street(),
           streetNr: faker.phone.number("##"),
           zip: faker.address.zipCode(),

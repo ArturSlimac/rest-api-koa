@@ -59,7 +59,13 @@ const getById = async (testPurchaser, params) => {
 
 const create = async (
   testPurchaser,
-  { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
+  {
+    date,
+    currencyId,
+    /* deliveryServiceId, */ products,
+    delivery_address,
+    boxes,
+  }
 ) => {
   debugLog(`Creating a new order for user ${testPurchaser}`, {
     date,
@@ -69,7 +75,7 @@ const create = async (
   const ordrId = await orderRepository.create(testPurchaser, {
     date,
     currencyId,
-    deliveryServiceId,
+    // deliveryServiceId,
     products,
     delivery_address,
     boxes,

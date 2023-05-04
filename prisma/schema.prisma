@@ -177,7 +177,7 @@ model Delivery_address {
   id       Int    @id @default(autoincrement())
   ordrId   Int    @unique
   order    Orders  @relation(fields: [ordrId], references: [id])
-  dsId     Int //delivery service Id
+  dsId     Int? //delivery service Id
   street   String
   streetNr String
   zip      String

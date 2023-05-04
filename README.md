@@ -188,7 +188,6 @@ You can access the REST API of the server using the following endpoints:
   - Body:
     - `date`: String (required)
     - `currencyId`: String (required)
-    - `deliveryServiceId`: Int (required)
     - `products`: Array of objects: {`id`: Int (required), `quantity`: Int (required), `price`: Float (required)}
     - `delivery_address`: Object {
       - `street`: String (required),
@@ -204,7 +203,6 @@ You can access the REST API of the server using the following endpoints:
     {
       date: "2022-03-25",
       currencyId: "EUR",
-      deliveryServiceId: 5,
       products: [
          { prdctId: 1, quantity: 5, netPrice: 12 },
          { prdctId: 2, quantity: 6, netPrice: 16 },

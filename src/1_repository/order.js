@@ -147,7 +147,7 @@ const create = async (
         delivery_address: {
           create: {
             ...delivery_address,
-            dsId: deliveryServiceId,
+            // dsId: deliveryServiceId,
           },
         },
         order_items: {
