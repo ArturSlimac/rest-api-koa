@@ -106,7 +106,7 @@ const seedCompany = async () => {
   const { id } = await prisma[tables.company].create({
     data: {
       companyId,
-      logoLink: faker.internet.avatar(),
+      logoLink: faker.image.animals(),
       name: faker.company.name(),
       phoneNr: faker.phone.number("+32 ### ## ## ##"),
       street: faker.address.street(),
