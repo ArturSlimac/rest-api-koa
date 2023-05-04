@@ -21,14 +21,16 @@ model Product_category {
 model Product {
   id                                 Int                                  @id @default(autoincrement())
   syncId                             Int?
+  cmpnId                             Int
+  company                            Company                              @relation(fields: [cmpnId], references: [id])
   productId                          String                               @unique
   unitOfMeasureId                    String?
   productAvailability                String?
   unitsInStock                       Int?
-  ctgrId                             Int @default(1) //no categorie
+  ctgrId                             Int                                  @default(1) //no categorie
   category                           Product_category                     @relation(fields: [ctgrId], references: [id])
   description                        Product_description[]
-  price                              Product_price[] 
+  price                              Product_price[]
   product_unit_of_measure_conversion Product_unit_of_measure_conversion[]
   cart_items                         Cart_items[]
   order_items                        Order_item[]
@@ -50,19 +52,19 @@ model Product_images {
 }
 
 model Product_description {
-  pdId       Int     @id @default(autoincrement())
+  pdId       Int      @id @default(autoincrement())
   syncId     Int?
   prdctId    Int?
   product    Product? @relation(fields: [prdctId], references: [id])
   languageId String
   name       String?
-  lister     String? @db.Text
-  short      String? @db.Text
-  long       String? @db.Text
+  lister     String?  @db.Text
+  short      String?  @db.Text
+  long       String?  @db.Text
 }
 
 model Product_price {
-  ppId            Int     @id @default(autoincrement())
+  ppId            Int      @id @default(autoincrement())
   syncId          Int?
   prdctId         Int?
   product         Product? @relation(fields: [prdctId], references: [id])
@@ -96,19 +98,20 @@ model Company {
   city       String?
   zipCode    String?
   purchasers Purchaser[]
+  Product    Product[]
 }
 
 model Purchaser {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   syncId      Int?
-  purchaserId String  @unique
+  purchaserId String   @unique
   cmpnId      Int
-  company     Company @relation(fields: [cmpnId], references: [id])
-  auth0Id     String  @default("12345")
-  firstName   String  @default("anon")
-  lastName    String  @default("anon")
-  phoneNumber String  @default("a number")
-  email       String  @default("mail@mail.co")
+  company     Company  @relation(fields: [cmpnId], references: [id])
+  auth0Id     String   @default("12345")
+  firstName   String   @default("anon")
+  lastName    String   @default("anon")
+  phoneNumber String   @default("a number")
+  email       String   @default("mail@mail.co")
   cart        Cart[]
   orders      Orders[]
 }
@@ -144,14 +147,14 @@ model Orders {
   id               Int                @id @default(autoincrement())
   syncId           Int?
   prchsrId         Int?
-  purchaser        Purchaser?          @relation(fields: [prchsrId], references: [id])
+  purchaser        Purchaser?         @relation(fields: [prchsrId], references: [id])
   processedById    Int?
   orderReference   String?
-  orderPostedDate  DateTime @default(now())
+  orderPostedDate  DateTime           @default(now())
   orderUpdatedDate DateTime?
   taxAmount        Float
   currencyId       String
-  status           OrderStatus @default(ordered)
+  status           OrderStatus        @default(ordered)
   order_items      Order_item[]
   delivery_address Delivery_address[]
   box_order        Box_order[]
@@ -159,10 +162,10 @@ model Orders {
 }
 
 model Order_item {
-  orderItemId     Int     @id @default(autoincrement())
+  orderItemId     Int      @id @default(autoincrement())
   syncId          Int?
   ordrId          Int?
-  order           Orders?   @relation(fields: [ordrId], references: [id])
+  order           Orders?  @relation(fields: [ordrId], references: [id])
   prdctId         Int?
   product         Product? @relation(fields: [prdctId], references: [id])
   quantity        Int
@@ -176,7 +179,7 @@ model Order_item {
 model Delivery_address {
   id       Int    @id @default(autoincrement())
   ordrId   Int    @unique
-  order    Orders  @relation(fields: [ordrId], references: [id])
+  order    Orders @relation(fields: [ordrId], references: [id])
   dsId     Int? //delivery service Id
   street   String
   streetNr String
@@ -199,10 +202,10 @@ model Box {
 }
 
 model Box_order {
-  id       Int   @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   syncId   Int?
   bxId     Int
-  box      Box   @relation(fields: [bxId], references: [id])
+  box      Box    @relation(fields: [bxId], references: [id])
   ordrId   Int
   order    Orders @relation(fields: [ordrId], references: [id])
   price    Float
@@ -216,7 +219,7 @@ model TrackTrace {
   verification String?
   typeOfVerif  String?
   ordrId       Int
-  order        Orders   @relation(fields: [ordrId], references: [id])
+  order        Orders  @relation(fields: [ordrId], references: [id])
 
   @@unique([trackcode, verification])
 }

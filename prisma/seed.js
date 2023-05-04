@@ -8,23 +8,6 @@ async function main() {
   //clean up db before seeding
   await cleanUpDb()
 
-  //categories
-  const ctgrId = await seedProductCategory("category1")
-  const ctgrId1 = await seedProductCategory("category2")
-
-  //products with images
-  Array.from([1, 2, 3, 4, 5, 6]).forEach((_) => seedProduct(ctgrId))
-  Array.from([1, 2, 3, 4, 5]).forEach((_) => seedProduct(ctgrId1))
-
-  //boxes
-  const type1 = "generic"
-  const amountOfBoxes1 = [1, 2, 3, 4]
-  amountOfBoxes1.forEach(async (_) => await seedBoxes(type1))
-
-  const type2 = "custom"
-  const amountOfBoxes2 = [1, 2, 3, 4, 5, 6]
-  amountOfBoxes2.forEach(async (_) => await seedBoxes(type2))
-
   //customers
   const cmpnId = await seedCompany()
   const cmpnId1 = await seedCompany()
@@ -39,6 +22,24 @@ async function main() {
 
   const amountOfPurchasers2 = [1, 2, 3, 4, 5, 6]
   const prchsrIds2 = await seedPrchsrIds(amountOfPurchasers2, cmpnId2)
+
+  //categories
+  const ctgrId = await seedProductCategory("category1")
+  const ctgrId1 = await seedProductCategory("category2")
+
+  //products with images
+  Array.from([1, 2, 3, 4, 5, 6]).forEach((_) => seedProduct(ctgrId, cmpnId))
+  Array.from([1, 2, 3, 4, 5]).forEach((_) => seedProduct(ctgrId1, cmpnId1))
+  Array.from([1, 2]).forEach((_) => seedProduct(ctgrId1, cmpnId2))
+
+  //boxes
+  const type1 = "generic"
+  const amountOfBoxes1 = [1, 2, 3, 4]
+  amountOfBoxes1.forEach(async (_) => await seedBoxes(type1))
+
+  const type2 = "custom"
+  const amountOfBoxes2 = [1, 2, 3, 4, 5, 6]
+  amountOfBoxes2.forEach(async (_) => await seedBoxes(type2))
 
   //carts for the purchasers
   prchsrIds.forEach(async (prchsrId) => await seedCart(prchsrId))
@@ -62,12 +63,13 @@ const seedProductCategory = async (categoryId) => {
   return id
 }
 
-const seedProduct = async (ctgrId) => {
+const seedProduct = async (ctgrId, cmpnId) => {
   const productId = shortid.generate()
   await prisma[tables.product].create({
     data: {
       productId,
       ctgrId,
+      cmpnId,
       unitOfMeasureId: "EA",
       productAvailability: "STOCK",
       unitsInStock: 100,
@@ -236,14 +238,14 @@ const cleanUpDb = async () => {
   await prisma[tables.cart_items].deleteMany()
   await prisma[tables.cart].deleteMany()
   await prisma[tables.order].deleteMany()
-  await prisma[tables.purchaser].deleteMany()
-  await prisma[tables.company].deleteMany()
   await prisma[tables.product_price].deleteMany()
   await prisma[tables.product_description].deleteMany()
   await prisma[tables.product_images].deleteMany()
   await prisma[tables.imageLink].deleteMany()
   await prisma[tables.product].deleteMany()
   await prisma[tables.product_category].deleteMany()
+  await prisma[tables.purchaser].deleteMany()
+  await prisma[tables.company].deleteMany()
 }
 
 const seedPrchsrIds = async (amountOfPurchasers, cmpnId) => {
