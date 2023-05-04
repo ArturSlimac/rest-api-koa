@@ -187,6 +187,7 @@ You can access the REST API of the server using the following endpoints:
 - /api/me/orders/ : create an order in the db
   - Body:
     - `date`: String (required)
+    - `splrId`: Int (required)
     - `currencyId`: String (required)
     - `products`: Array of objects: {`id`: Int (required), `quantity`: Int (required), `price`: Float (required)}
     - `delivery_address`: Object {
@@ -203,6 +204,7 @@ You can access the REST API of the server using the following endpoints:
     {
       date: "2022-03-25",
       currencyId: "EUR",
+      splrId: 1,
       products: [
          { prdctId: 1, quantity: 5, netPrice: 12 },
          { prdctId: 2, quantity: 6, netPrice: 16 },

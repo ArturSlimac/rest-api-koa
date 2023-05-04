@@ -128,7 +128,7 @@ const getById = async (testPurchaser, id) => {
 
 const create = async (
   testPurchaser,
-  { date, currencyId, deliveryServiceId, products, delivery_address, boxes }
+  { date, currencyId, splrId, products, delivery_address, boxes }
 ) => {
   const status = statusesOrder.ordered
   const taxAmount = 125
@@ -141,13 +141,13 @@ const create = async (
       data: {
         currencyId,
         prchsrId: testPurchaser,
+        splrId,
         orderPostedDate: date,
         status,
         taxAmount,
         delivery_address: {
           create: {
             ...delivery_address,
-            // dsId: deliveryServiceId,
           },
         },
         order_items: {

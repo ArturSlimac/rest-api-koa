@@ -55,7 +55,7 @@ const createOrder = async (ctx) => {
 createOrder.validationScheme = {
   body: {
     date: Joi.date().required(),
-    //deliveryServiceId: Joi.number().integer().positive(),
+    splrId: Joi.number().integer().positive(),
     currencyId: Joi.string().required(),
     products: Joi.array().items(
       Joi.object({

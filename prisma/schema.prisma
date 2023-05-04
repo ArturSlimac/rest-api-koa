@@ -99,6 +99,7 @@ model Company {
   zipCode    String?
   purchasers Purchaser[]
   Product    Product[]
+  Orders     Orders[]
 }
 
 model Purchaser {
@@ -148,6 +149,8 @@ model Orders {
   syncId           Int?
   prchsrId         Int?
   purchaser        Purchaser?         @relation(fields: [prchsrId], references: [id])
+  splrId           Int
+  company          Company            @relation(fields: [splrId], references: [id])
   processedById    Int?
   orderReference   String?
   orderPostedDate  DateTime           @default(now())

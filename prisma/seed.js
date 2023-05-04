@@ -47,9 +47,9 @@ async function main() {
   prchsrIds2.forEach(async (prchsrId) => await seedCart(prchsrId))
 
   //orders
-  prchsrIds.forEach(async (prchsrId) => await seedOrders(prchsrId))
-  prchsrIds1.forEach(async (prchsrId) => await seedOrders(prchsrId))
-  prchsrIds2.forEach(async (prchsrId) => await seedOrders(prchsrId))
+  prchsrIds.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId1))
+  prchsrIds1.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId2))
+  prchsrIds2.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId))
 }
 
 const seedProductCategory = async (categoryId) => {
@@ -183,9 +183,10 @@ const seedBoxes = async (type) => {
   })
 }
 
-const seedOrders = async (prchsrId) => {
+const seedOrders = async (prchsrId, splrId) => {
   const { id: prdctId } = await prisma[tables.product].findFirst({
     select: { id: true },
+    where: { cmpnId: splrId },
   })
 
   const { id: bxId } = await prisma[tables.product].findFirst({
@@ -196,6 +197,7 @@ const seedOrders = async (prchsrId) => {
     data: {
       currencyId: "EUR",
       prchsrId,
+      splrId,
       orderPostedDate: faker.date.between(),
       status: statusesOrder.ordered,
       taxAmount: 125,

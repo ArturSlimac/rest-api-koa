@@ -2,6 +2,7 @@
 const bodyOrder = {
   date: "2022-03-25",
   currencyId: "EUR",
+  splrId: 1,
   products: [
     { id: 1, quantity: 5, price: 12 },
     { id: 2, quantity: 6, price: 16 },
