@@ -19,7 +19,6 @@ const bodyOrder = {
     { bxId: 5, quantity: 5, price: 95.5 },
   ],
 }
-
 const updateOrder = {
   delivery_address: {
     street: "street",

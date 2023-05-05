@@ -18,6 +18,7 @@ const getAll = async (
       select: {
         id: true,
         unitsInStock: true,
+        cmpnId: true,
         productAvailability: true,
         ctgrId: true,
         unitOfMeasureId: true,
@@ -66,6 +67,7 @@ const getById = async (id) => {
       select: {
         id: true,
         unitOfMeasureId: true,
+        cmpnId: true,
         productAvailability: true,
         unitsInStock: true,
         ctgrId: true,
