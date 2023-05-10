@@ -3,6 +3,7 @@ const prisma = new PrismaClient()
 const { tables, statusesOrder } = require("../src/0_data/index")
 const { faker } = require("@faker-js/faker")
 const shortid = require("shortid")
+const { log } = require("winston")
 
 async function main() {
   //clean up db before seeding
@@ -47,9 +48,15 @@ async function main() {
   prchsrIds2.forEach(async (prchsrId) => await seedCart(prchsrId))
 
   //orders
-  prchsrIds.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId1))
-  prchsrIds1.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId2))
-  prchsrIds2.forEach(async (prchsrId) => await seedOrders(prchsrId, cmpnId))
+  prchsrIds.forEach(
+    async (prchsrId) => await seedOrders(prchsrId, [cmpnId1, cmpnId2])
+  )
+  prchsrIds1.forEach(
+    async (prchsrId) => await seedOrders(prchsrId, [cmpnId2, cmpnId])
+  )
+  prchsrIds2.forEach(
+    async (prchsrId) => await seedOrders(prchsrId, [cmpnId, cmpnId1])
+  )
 }
 
 const seedProductCategory = async (categoryId) => {
@@ -183,50 +190,52 @@ const seedBoxes = async (type) => {
   })
 }
 
-const seedOrders = async (prchsrId, splrId) => {
-  const { id: prdctId } = await prisma[tables.product].findFirst({
-    select: { id: true },
-    where: { cmpnId: splrId },
-  })
-
-  const { id: bxId } = await prisma[tables.product].findFirst({
+const seedOrders = async (prchsrId, splrIds) => {
+  const { id: bxId } = await prisma[tables.box].findFirst({
     select: { id: true },
   })
 
-  await prisma[tables.order].create({
-    data: {
-      currencyId: "EUR",
-      prchsrId,
-      splrId,
-      orderPostedDate: faker.date.between(),
-      status: statusesOrder.ordered,
-      taxAmount: 125,
-      track_trace: {
-        create: {
-          trackcode: shortid.generate(),
-          verification: shortid.generate(),
+  splrIds.forEach(async (splrId) => {
+    const { id: prdctId } = await prisma[tables.product].findFirst({
+      select: { id: true },
+      where: { cmpnId: splrId },
+    })
+
+    await prisma[tables.order].create({
+      data: {
+        currencyId: "EUR",
+        prchsrId,
+        splrId,
+        orderPostedDate: faker.date.between(),
+        status: statusesOrder.ordered,
+        taxAmount: 125,
+        track_trace: {
+          create: {
+            trackcode: shortid.generate(),
+            verification: shortid.generate(),
+          },
+        },
+        delivery_address: {
+          create: {
+            street: faker.address.street(),
+            streetNr: faker.phone.number("##"),
+            zip: faker.address.zipCode(),
+            country: faker.address.country(),
+            city: faker.address.city(),
+          },
+        },
+        order_items: {
+          createMany: {
+            data: [{ prdctId, quantity: 5, netPrice: 12 }],
+          },
+        },
+        box_order: {
+          createMany: {
+            data: [{ bxId, quantity: 2, price: 12 }],
+          },
         },
       },
-      delivery_address: {
-        create: {
-          street: faker.address.street(),
-          streetNr: faker.phone.number("##"),
-          zip: faker.address.zipCode(),
-          country: faker.address.country(),
-          city: faker.address.city(),
-        },
-      },
-      order_items: {
-        createMany: {
-          data: [{ prdctId, quantity: 5, netPrice: 12 }],
-        },
-      },
-      box_order: {
-        createMany: {
-          data: [{ bxId, quantity: 2, price: 12 }],
-        },
-      },
-    },
+    })
   })
 }
 
